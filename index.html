@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lunar Fleet Command</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Lunar Base 1</p>
+          <h1>Lunar Fleet Command</h1>
+        </div>
+        <div class="resources" id="resources"></div>
+      </header>
+
+      <section class="layout">
+        <section class="base-panel">
+          <div class="moon-scene" aria-label="Lunar Base 1">
+            <div class="planet"></div>
+            <div class="station">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="orbit orbit-a"></div>
+            <div class="orbit orbit-b"></div>
+          </div>
+          <div class="docks" id="docks"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">
+            <h2>Shipyard</h2>
+            <button id="resetBtn" type="button">Novy save</button>
+          </div>
+          <div class="shipyard" id="shipyard"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">
+            <h2>Posadka</h2>
+            <span id="crewSummary"></span>
+          </div>
+          <div class="crew-list" id="crewList"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">
+            <h2>Mise</h2>
+            <span id="missionSummary"></span>
+          </div>
+          <div class="missions" id="missions"></div>
+        </section>
+
+        <section class="panel log-panel">
+          <div class="panel-title">
+            <h2>Denik</h2>
+            <div class="save-actions">
+              <button id="exportBtn" type="button">Export</button>
+              <button id="importBtn" type="button">Import</button>
+            </div>
+          </div>
+          <textarea id="saveBox" spellcheck="false" aria-label="Save data"></textarea>
+          <div class="log" id="log"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="game.js"></script>
+  </body>
+</html>
