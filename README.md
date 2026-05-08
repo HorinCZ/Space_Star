@@ -1,24 +1,21 @@
 # Lunar Fleet Command
 
-Webovy prototyp roguelite sci-fi management hry.
+A browser-based roguelite sci-fi fleet management prototype.
 
-Hrac zacina na Lunar Base 1 se dvema doky, deseti cleny posadky a rozpoctem na dve nejmensi lode Aster-5 Scout. Hra bezi ciste v prohlizeci a uklada progress lokalne do prohlizece.
+The player starts at Lunar Base 1 with two empty docks, 1000 credits, and no crew. Ships can be purchased from the shipyard, and new level 1 cadets can be hired from departments such as Command, Engineering, Science, Medical, Tactical, and Operations.
 
-## Spusteni
+## Current Features
 
-Otevri `index.html` v prohlizeci.
+- Lunar Base 1 with 2 docks
+- Shipyard with Aster-5, Vega-7, Orion-9, Helios-12, and Atlas-16 ship classes
+- Hireable level 1 cadets with department colors
+- Crew assignment to selected ships
+- Missions with department-based checks
+- Ship energy batteries with station recharge
+- Ship repair and sale actions
+- Local browser save
+- Save export/import
 
-## Aktualni funkce
+## Public Web
 
-- Lunar Base 1
-- 2 doky
-- shipyard s lodemi Aster-5, Vega-7, Orion-9, Helios-12 a Atlas-16
-- 10 clenu posadky
-- prirazovani posadky na lode
-- mise s rizikem a odmenou
-- lokalni save
-- export/import savu
-
-## Verejny web
-
-Projekt je pripraveny pro GitHub Pages. Po nahrani souboru do repozitare zapni Pages z vetve `main` a slozky `/root`.
+The project is ready for GitHub Pages. Deploy from the `main` branch and `/root` folder.
