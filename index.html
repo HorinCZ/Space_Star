@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="cs">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,7 +16,12 @@
         <div class="resources" id="resources"></div>
       </header>
 
-      <section class="layout">
+      <nav class="view-tabs" aria-label="Game views">
+        <button class="is-active" type="button" data-view="base">Base</button>
+        <button type="button" data-view="missions">Missions</button>
+      </nav>
+
+      <section class="layout view is-active" id="baseView">
         <section class="base-panel">
           <div class="moon-scene" aria-label="Lunar Base 1">
             <div class="planet"></div>
@@ -34,36 +39,63 @@
         <section class="panel">
           <div class="panel-title">
             <h2>Shipyard</h2>
-            <button id="resetBtn" type="button">Novy save</button>
+            <span id="shipyardSummary"></span>
           </div>
           <div class="shipyard" id="shipyard"></div>
         </section>
 
         <section class="panel">
           <div class="panel-title">
-            <h2>Posadka</h2>
+            <h2>Personnel Office</h2>
+            <span id="hireSummary"></span>
+          </div>
+          <div class="hire-list" id="hireList"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">
+            <h2>Crew Roster</h2>
             <span id="crewSummary"></span>
           </div>
           <div class="crew-list" id="crewList"></div>
         </section>
 
-        <section class="panel">
+        <section class="panel save-panel">
           <div class="panel-title">
-            <h2>Mise</h2>
-            <span id="missionSummary"></span>
+            <h2>Save Management</h2>
+            <div class="save-actions">
+              <button id="exportBtn" type="button">Export Save</button>
+              <button id="importBtn" type="button">Import Save</button>
+              <button id="resetBtn" type="button">New Save</button>
+            </div>
           </div>
-          <div class="missions" id="missions"></div>
+          <textarea id="saveBox" spellcheck="false" aria-label="Save data"></textarea>
+        </section>
+      </section>
+
+      <section class="mission-view view" id="missionsView">
+        <section class="mission-column">
+          <section class="panel mission-ship-panel">
+            <div class="panel-title">
+              <h2>Selected Ship</h2>
+              <span id="missionShipSummary"></span>
+            </div>
+            <div id="missionShipCard"></div>
+          </section>
+
+          <section class="panel mission-panel">
+            <div class="panel-title">
+              <h2>Missions</h2>
+              <span id="missionSummary"></span>
+            </div>
+            <div class="missions" id="missions"></div>
+          </section>
         </section>
 
         <section class="panel log-panel">
           <div class="panel-title">
-            <h2>Denik</h2>
-            <div class="save-actions">
-              <button id="exportBtn" type="button">Export</button>
-              <button id="importBtn" type="button">Import</button>
-            </div>
+            <h2>Command Log</h2>
           </div>
-          <textarea id="saveBox" spellcheck="false" aria-label="Save data"></textarea>
           <div class="log" id="log"></div>
         </section>
       </section>
