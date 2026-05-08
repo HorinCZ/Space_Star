@@ -1,428 +1,67 @@
-const saveKey = "lunar-fleet-command-save-v1";
-
-const shipClasses = [
-  {
-    id: "aster-5",
-    name: "Aster-5 Scout",
-    role: "maly pruzkumnik",
-    crewMax: 5,
-    cost: 500,
-    hull: 7,
-    sensors: 8,
-    weapons: 3,
-    range: 5,
-  },
-  {
-    id: "vega-7",
-    name: "Vega-7 Cutter",
-    role: "rychla hlidkova lod",
-    crewMax: 7,
-    cost: 850,
-    hull: 10,
-    sensors: 7,
-    weapons: 6,
-    range: 6,
-  },
-  {
-    id: "orion-9",
-    name: "Orion-9 Surveyor",
-    role: "vedecka expedice",
-    crewMax: 9,
-    cost: 1300,
-    hull: 12,
-    sensors: 11,
-    weapons: 4,
-    range: 8,
-  },
-  {
-    id: "helios-12",
-    name: "Helios-12 Frigate",
-    role: "tezsi eskort",
-    crewMax: 12,
-    cost: 2100,
-    hull: 18,
-    sensors: 8,
-    weapons: 12,
-    range: 8,
-  },
-  {
-    id: "atlas-16",
-    name: "Atlas-16 Cruiser",
-    role: "dlouhy dosah",
-    crewMax: 16,
-    cost: 3600,
-    hull: 26,
-    sensors: 12,
-    weapons: 16,
-    range: 12,
-  },
+const saveKey="lunar-fleet-command-save-v2";
+const cadetCost=100,repairCostPerHull=40,rechargeCostPerCell=25;
+const skillLabels={command:"Command",engineering:"Engineering",science:"Science",medical:"Medical",tactical:"Tactical",operations:"Operations"};
+const rankLadder=[
+{level:0,xp:0,rank:"Cadet",code:"CDT"},{level:1,xp:10,rank:"Crewman",code:"CRW"},{level:2,xp:30,rank:"Specialist",code:"SPC"},{level:3,xp:80,rank:"Ensign",code:"ENS"},{level:4,xp:160,rank:"Lieutenant JG",code:"LTJG"},{level:5,xp:280,rank:"Lieutenant",code:"LT"},{level:6,xp:450,rank:"Commander",code:"CDR"},{level:7,xp:700,rank:"Captain",code:"CPT"},{level:8,xp:1000,rank:"Commodore",code:"CMD"}
 ];
-
-const startingCrew = [
-  ["Mara Voss", "kapitan", 8, 4, 5, 4],
-  ["Jonas Kade", "prvni dustojnik", 7, 5, 4, 5],
-  ["Ilya Ren", "pilot", 4, 5, 3, 8],
-  ["Tomas Vale", "inzenyr", 3, 8, 4, 4],
-  ["Nika Sol", "vedecky dustojnik", 4, 4, 9, 3],
-  ["Ari Chen", "lekar", 4, 5, 7, 3],
-  ["Rami Ko", "taktik", 5, 4, 3, 7],
-  ["Elena Park", "technik", 3, 7, 4, 4],
-  ["Milo Dax", "kadet", 3, 3, 3, 4],
-  ["Sara Wynn", "kadet", 3, 4, 4, 3],
+const departments=[
+{id:"command",name:"Command",color:"#62b6ff",focus:"leadership and mission coordination",skills:{command:5,engineering:2,science:2,medical:1,tactical:2,operations:3}},
+{id:"engineering",name:"Engineering",color:"#f4bc56",focus:"repairs, power systems, and ship endurance",skills:{command:1,engineering:5,science:2,medical:1,tactical:2,operations:3}},
+{id:"science",name:"Science",color:"#a98bff",focus:"anomalies, scans, and research data",skills:{command:1,engineering:2,science:5,medical:2,tactical:1,operations:3}},
+{id:"medical",name:"Medical",color:"#75d18a",focus:"injury control and crew survival",skills:{command:1,engineering:2,science:3,medical:5,tactical:1,operations:2}},
+{id:"tactical",name:"Tactical",color:"#f06a5f",focus:"combat, escorts, and threat response",skills:{command:2,engineering:2,science:1,medical:1,tactical:5,operations:3}},
+{id:"operations",name:"Operations",color:"#41d6c3",focus:"piloting, logistics, sensors, and away-team support",skills:{command:2,engineering:3,science:2,medical:1,tactical:2,operations:5}}
 ];
-
-const missions = [
-  {
-    id: "relay",
-    name: "Oprava relay stanice",
-    risk: 18,
-    reward: 190,
-    need: "tech",
-    text: "Porucha komunikacni site na okraji lunarniho prostoru.",
-  },
-  {
-    id: "anomaly",
-    name: "Mapovani anomalie",
-    risk: 28,
-    reward: 280,
-    need: "science",
-    text: "Nestabilni signal slibuje data, ale muze poskodit lod.",
-  },
-  {
-    id: "escort",
-    name: "Eskorta konvoje",
-    risk: 36,
-    reward: 360,
-    need: "combat",
-    text: "Obchodni transport hlasi nezname stiny za orbitou Marsu.",
-  },
+const shipClasses=[
+{id:"aster-5",name:"Aster-5 Scout",role:"small survey craft",crewMax:5,cost:500,hull:7,energyMax:5,sensors:8,weapons:3,range:5},
+{id:"vega-7",name:"Vega-7 Cutter",role:"fast patrol vessel",crewMax:7,cost:850,hull:10,energyMax:6,sensors:7,weapons:6,range:6},
+{id:"orion-9",name:"Orion-9 Surveyor",role:"science expedition ship",crewMax:9,cost:1300,hull:12,energyMax:7,sensors:11,weapons:4,range:8},
+{id:"helios-12",name:"Helios-12 Frigate",role:"heavy escort vessel",crewMax:12,cost:2100,hull:18,energyMax:8,sensors:8,weapons:12,range:8},
+{id:"atlas-16",name:"Atlas-16 Cruiser",role:"long-range command cruiser",crewMax:16,cost:3600,hull:26,energyMax:10,sensors:12,weapons:16,range:12}
 ];
-
-let state = loadGame();
-
-const resourcesEl = document.querySelector("#resources");
-const docksEl = document.querySelector("#docks");
-const shipyardEl = document.querySelector("#shipyard");
-const crewListEl = document.querySelector("#crewList");
-const crewSummaryEl = document.querySelector("#crewSummary");
-const missionsEl = document.querySelector("#missions");
-const missionSummaryEl = document.querySelector("#missionSummary");
-const logEl = document.querySelector("#log");
-const saveBoxEl = document.querySelector("#saveBox");
-
-document.querySelector("#resetBtn").addEventListener("click", () => {
-  if (confirm("Zacit znovu od Lunar Base 1?")) {
-    state = createNewGame();
-    persist();
-    render();
-  }
-});
-
-document.querySelector("#exportBtn").addEventListener("click", () => {
-  saveBoxEl.value = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
-  saveBoxEl.select();
-});
-
-document.querySelector("#importBtn").addEventListener("click", () => {
-  try {
-    const imported = JSON.parse(decodeURIComponent(escape(atob(saveBoxEl.value.trim()))));
-    if (!imported || !Array.isArray(imported.crew) || !Array.isArray(imported.ships)) throw new Error();
-    state = imported;
-    log("Save importovan.");
-    persist();
-    render();
-  } catch {
-    log("Import se nepovedl. Save kod je neplatny.");
-    render();
-  }
-});
-
-document.addEventListener("click", (event) => {
-  const buyId = event.target.dataset.buy;
-  const selectId = event.target.dataset.select;
-  const assignId = event.target.dataset.assign;
-  const unassignId = event.target.dataset.unassign;
-  const missionId = event.target.dataset.mission;
-
-  if (buyId) buyShip(buyId);
-  if (selectId) selectShip(selectId);
-  if (assignId) assignCrew(assignId);
-  if (unassignId) unassignCrew(unassignId);
-  if (missionId) launchMission(missionId);
-});
-
-function createNewGame() {
-  return {
-    credits: 1000,
-    dockLimit: 2,
-    nextShipId: 1,
-    selectedShipId: null,
-    ships: [],
-    crew: startingCrew.map(([name, rank, command, tech, science, combat], index) => ({
-      id: `crew-${index + 1}`,
-      name,
-      rank,
-      command,
-      tech,
-      science,
-      combat,
-      xp: 0,
-      shipId: null,
-    })),
-    log: [
-      "Lunar Base 1 je aktivni. Rozpocet staci presne na dve lode tridy Aster-5.",
-    ],
-  };
-}
-
-function loadGame() {
-  const raw = localStorage.getItem(saveKey);
-  if (!raw) return createNewGame();
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return createNewGame();
-  }
-}
-
-function persist() {
-  localStorage.setItem(saveKey, JSON.stringify(state));
-}
-
-function buyShip(classId) {
-  const shipClass = shipClasses.find((item) => item.id === classId);
-  if (!shipClass) return;
-  if (state.ships.length >= state.dockLimit) return log("Oba doky jsou obsazene.");
-  if (state.credits < shipClass.cost) return log("Na tuhle lod nejsou kredity.");
-
-  const ship = {
-    id: `ship-${state.nextShipId++}`,
-    classId,
-    name: `${shipClass.name} ${String(state.nextShipId - 1).padStart(2, "0")}`,
-    hullNow: shipClass.hull,
-    missions: 0,
-  };
-  state.credits -= shipClass.cost;
-  state.ships.push(ship);
-  state.selectedShipId = ship.id;
-  log(`${ship.name} zakoupena a presunuta do doku.`);
-  persist();
-  render();
-}
-
-function selectShip(shipId) {
-  if (!state.ships.some((ship) => ship.id === shipId)) return;
-  state.selectedShipId = shipId;
-  persist();
-  render();
-}
-
-function assignCrew(crewId) {
-  const ship = selectedShip();
-  const crew = state.crew.find((member) => member.id === crewId);
-  if (!ship || !crew || crew.shipId) return;
-
-  const shipClass = classFor(ship);
-  const assigned = crewForShip(ship.id);
-  if (assigned.length >= shipClass.crewMax) return log(`${ship.name} nema volne misto.`);
-
-  crew.shipId = ship.id;
-  log(`${crew.name} prirazen(a) na ${ship.name}.`);
-  persist();
-  render();
-}
-
-function unassignCrew(crewId) {
-  const crew = state.crew.find((member) => member.id === crewId);
-  if (!crew) return;
-  crew.shipId = null;
-  persist();
-  render();
-}
-
-function launchMission(missionId) {
-  const ship = selectedShip();
-  const mission = missions.find((item) => item.id === missionId);
-  if (!ship || !mission) return;
-
-  const crew = crewForShip(ship.id);
-  if (crew.length === 0) return log("Lod nemuze odletet bez posadky.");
-
-  const shipClass = classFor(ship);
-  const crewPower = crew.reduce((sum, member) => sum + member[mission.need], 0);
-  const command = crew.reduce((sum, member) => sum + member.command, 0);
-  const shipPower = mission.need === "combat" ? shipClass.weapons : shipClass.sensors;
-  const chance = Math.max(18, Math.min(92, 42 + crewPower + Math.floor(command / 3) + shipPower - mission.risk));
-  const roll = Math.floor(Math.random() * 100) + 1;
-
-  ship.missions++;
-  if (roll <= chance) {
-    const reward = mission.reward + Math.floor(Math.random() * 80);
-    state.credits += reward;
-    crew.forEach((member) => (member.xp += 1));
-    log(`${ship.name}: mise "${mission.name}" uspesna. Ziskano ${reward} kreditu.`);
-  } else {
-    const damage = 1 + Math.floor(Math.random() * 3);
-    ship.hullNow = Math.max(1, ship.hullNow - damage);
-    log(`${ship.name}: mise "${mission.name}" selhala. Trup poskozen o ${damage}.`);
-  }
-
-  persist();
-  render();
-}
-
-function selectedShip() {
-  return state.ships.find((ship) => ship.id === state.selectedShipId) || state.ships[0] || null;
-}
-
-function classFor(ship) {
-  return shipClasses.find((item) => item.id === ship.classId);
-}
-
-function crewForShip(shipId) {
-  return state.crew.filter((member) => member.shipId === shipId);
-}
-
-function log(message) {
-  state.log.unshift(message);
-  state.log = state.log.slice(0, 8);
-}
-
-function render() {
-  const assigned = state.crew.filter((member) => member.shipId).length;
-  resourcesEl.innerHTML = `
-    <div class="resource">Kredity<strong>${state.credits}</strong></div>
-    <div class="resource">Doky<strong>${state.ships.length}/${state.dockLimit}</strong></div>
-    <div class="resource">Posadka<strong>${assigned}/${state.crew.length}</strong></div>
-  `;
-
-  renderDocks();
-  renderShipyard();
-  renderCrew();
-  renderMissions();
-  renderLog();
-}
-
-function renderDocks() {
-  const slots = Array.from({ length: state.dockLimit }, (_, index) => state.ships[index] || null);
-  docksEl.innerHTML = slots
-    .map((ship, index) => {
-      if (!ship) {
-        return `<article class="dock"><header><h2>Dok ${index + 1}</h2><span class="tag warn">volny</span></header><p class="meta">Pripraven pro novou lod ze shipyardu.</p></article>`;
-      }
-      const shipClass = classFor(ship);
-      const crew = crewForShip(ship.id);
-      const selected = ship.id === state.selectedShipId ? "ok" : "";
-      return `
-        <article class="dock">
-          <header>
-            <div>
-              <h2>${ship.name}</h2>
-              <p class="meta">${shipClass.role}</p>
-            </div>
-            <span class="tag ${selected}">${crew.length}/${shipClass.crewMax}</span>
-          </header>
-          <div class="stats-grid">
-            <div class="stat">Trup<strong>${ship.hullNow}/${shipClass.hull}</strong></div>
-            <div class="stat">Senzory<strong>${shipClass.sensors}</strong></div>
-            <div class="stat">Zbrane<strong>${shipClass.weapons}</strong></div>
-            <div class="stat">Mise<strong>${ship.missions}</strong></div>
-          </div>
-          <button type="button" data-select="${ship.id}">Vybrat lod</button>
-        </article>
-      `;
-    })
-    .join("");
-}
-
-function renderShipyard() {
-  shipyardEl.innerHTML = shipClasses
-    .map((ship) => {
-      const canBuy = state.credits >= ship.cost && state.ships.length < state.dockLimit;
-      return `
-        <article class="ship">
-          <header>
-            <div>
-              <h2>${ship.name}</h2>
-              <p class="meta">${ship.role}</p>
-            </div>
-            <span class="tag">${ship.crewMax} osob</span>
-          </header>
-          <div class="stats-grid">
-            <div class="stat">Cena<strong>${ship.cost}</strong></div>
-            <div class="stat">Trup<strong>${ship.hull}</strong></div>
-            <div class="stat">Senzory<strong>${ship.sensors}</strong></div>
-            <div class="stat">Zbrane<strong>${ship.weapons}</strong></div>
-          </div>
-          <button type="button" data-buy="${ship.id}" ${canBuy ? "" : "disabled"}>Koupit</button>
-        </article>
-      `;
-    })
-    .join("");
-}
-
-function renderCrew() {
-  const ship = selectedShip();
-  const selectedName = ship ? ship.name : "zadna lod";
-  crewSummaryEl.textContent = `Vybrano: ${selectedName}`;
-
-  crewListEl.innerHTML = state.crew
-    .map((member) => {
-      const assignedShip = state.ships.find((shipItem) => shipItem.id === member.shipId);
-      const isAssigned = Boolean(assignedShip);
-      return `
-        <article class="crew ${isAssigned ? "assigned" : ""}">
-          <header>
-            <div>
-              <h2>${member.name}</h2>
-              <p class="meta">${member.rank}${assignedShip ? ` - ${assignedShip.name}` : ""}</p>
-            </div>
-            <span class="tag ${isAssigned ? "ok" : ""}">XP ${member.xp}</span>
-          </header>
-          <div class="stats-grid">
-            <div class="stat">Veleni<strong>${member.command}</strong></div>
-            <div class="stat">Tech<strong>${member.tech}</strong></div>
-            <div class="stat">Veda<strong>${member.science}</strong></div>
-            <div class="stat">Boj<strong>${member.combat}</strong></div>
-          </div>
-          <div class="crew-actions">
-            <button type="button" data-assign="${member.id}" ${!ship || isAssigned ? "disabled" : ""}>Priradit</button>
-            <button type="button" data-unassign="${member.id}" ${isAssigned ? "" : "disabled"}>Odvolat</button>
-          </div>
-        </article>
-      `;
-    })
-    .join("");
-}
-
-function renderMissions() {
-  const ship = selectedShip();
-  missionSummaryEl.textContent = ship ? ship.name : "nejdriv kup lod";
-
-  missionsEl.innerHTML = missions
-    .map((mission) => `
-      <article class="mission">
-        <header>
-          <div>
-            <h2>${mission.name}</h2>
-            <p class="meta">${mission.text}</p>
-          </div>
-          <span class="tag warn">risk ${mission.risk}</span>
-        </header>
-        <div class="stats-grid">
-          <div class="stat">Odmena<strong>${mission.reward}</strong></div>
-          <div class="stat">Test<strong>${mission.need}</strong></div>
-          <div class="stat">Lod<strong>${ship ? crewForShip(ship.id).length : 0}</strong></div>
-          <div class="stat">Stav<strong>${ship ? classFor(ship).hull : "-"}</strong></div>
-        </div>
-        <button type="button" data-mission="${mission.id}" ${ship ? "" : "disabled"}>Vyslat</button>
-      </article>
-    `)
-    .join("");
-}
-
-function renderLog() {
-  logEl.innerHTML = state.log.map((entry) => `<div class="log-entry">${entry}</div>`).join("");
-}
-
+const missions=[
+{id:"relay",name:"Repair Relay Station",risk:18,reward:190,energyCost:1,need:"engineering",ship:"hull",text:"A broken comm relay is drifting at the edge of lunar control space."},
+{id:"anomaly",name:"Map Spatial Anomaly",risk:28,reward:280,energyCost:2,need:"science",ship:"sensors",text:"An unstable signal promises valuable data and a dangerous field surge."},
+{id:"escort",name:"Escort Supply Convoy",risk:36,reward:360,energyCost:2,need:"tactical",ship:"weapons",text:"A civilian hauler reports unknown contacts beyond the Mars corridor."},
+{id:"triage",name:"Emergency Triage Run",risk:24,reward:250,energyCost:2,need:"medical",ship:"range",text:"A remote mining dome needs a medical team before its storm shutters fail."}
+];
+const firstNames=["Ari","Mara","Jonas","Nika","Ilya","Rami","Elena","Tomas","Milo","Sara","Kira","Noah","Lena","Darin","Vera","Ren"];
+const lastNames=["Voss","Kade","Ren","Vale","Sol","Chen","Ko","Park","Dax","Wynn","Reyes","Stone","Novak","Sato","Hale","Cross"];
+let state=loadGame(),activeView="base";
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
+const resourcesEl=$("#resources"),docksEl=$("#docks"),shipyardEl=$("#shipyard"),shipyardSummaryEl=$("#shipyardSummary"),hireListEl=$("#hireList"),hireSummaryEl=$("#hireSummary"),crewListEl=$("#crewList"),crewSummaryEl=$("#crewSummary"),missionsEl=$("#missions"),missionSummaryEl=$("#missionSummary"),missionShipSummaryEl=$("#missionShipSummary"),missionShipCardEl=$("#missionShipCard"),logEl=$("#log"),saveBoxEl=$("#saveBox"),baseViewEl=$("#baseView"),missionsViewEl=$("#missionsView"),viewButtons=$$("[data-view]");
+viewButtons.forEach(b=>b.addEventListener("click",()=>{activeView=b.dataset.view;renderViews();}));
+$("#resetBtn").addEventListener("click",()=>{if(confirm("Start a new save at Lunar Base 1?")){state=createNewGame();persist();render();}});
+$("#exportBtn").addEventListener("click",()=>{saveBoxEl.value=btoa(unescape(encodeURIComponent(JSON.stringify(state))));saveBoxEl.select();});
+$("#importBtn").addEventListener("click",()=>{try{const s=JSON.parse(decodeURIComponent(escape(atob(saveBoxEl.value.trim()))));if(!s||s.version!==2||!Array.isArray(s.crew)||!Array.isArray(s.ships))throw Error();state=normalizeState(s);addLog("Save imported.");persist();render();}catch{addLog("Import failed. The save code is not valid for this version.");render();}});
+document.addEventListener("click",e=>{const d=e.target.dataset;if(d.buy)buyShip(d.buy);if(d.hire)hireCadet(d.hire);if(d.select)selectShip(d.select);if(d.assign)assignCrew(d.assign);if(d.unassign)unassignCrew(d.unassign);if(d.mission)launchMission(d.mission);if(d.upgradeCrew&&d.upgradeSkill)upgradeCrewSkill(d.upgradeCrew,d.upgradeSkill);if(d.repair)repairShip(d.repair);if(d.sell)sellShip(d.sell);if(d.recharge)rechargeShip(d.recharge);});
+function createNewGame(){return{version:2,credits:1000,dockLimit:2,nextShipId:1,nextCrewId:1,selectedShipId:null,ships:[],crew:[],log:["Lunar Base 1 is online. You have two empty docks, no crew, and enough credits for two Aster-5 Scouts."]};}
+function loadGame(){const raw=localStorage.getItem(saveKey);if(!raw)return createNewGame();try{const s=JSON.parse(raw);return s.version===2?normalizeState(s):createNewGame();}catch{return createNewGame();}}
+function normalizeState(s){s.ships?.forEach(ship=>{const c=classFor(ship);if(c&&typeof ship.energyNow!=="number")ship.energyNow=c.energyMax;});s.crew?.forEach(m=>{if(typeof m.pendingSkillPoints!=="number")m.pendingSkillPoints=0;syncRank(m);});return s;}
+function persist(){localStorage.setItem(saveKey,JSON.stringify(state));}
+function shipClass(id){return shipClasses.find(x=>x.id===id);}function classFor(ship){return shipClass(ship.classId);}function selectedShip(){return state.ships.find(s=>s.id===state.selectedShipId)||state.ships[0]||null;}function crewForShip(id){return state.crew.filter(m=>m.shipId===id);}function departmentFor(x){const id=typeof x==="string"?x:x.department;return departments.find(d=>d.id===id)||departments[0];}function skillValue(m,s){return m.skills?.[s]||0;}function addLog(m){state.log.unshift(m);state.log=state.log.slice(0,10);}
+function buyShip(id){const c=shipClass(id);if(!c)return;if(state.ships.length>=state.dockLimit)return addLog("Both docks are already occupied.");if(state.credits<c.cost)return addLog("Not enough credits for that ship.");const n=state.nextShipId++,ship={id:`ship-${n}`,classId:id,name:`${c.name} ${String(n).padStart(2,"0")}`,hullNow:c.hull,energyNow:c.energyMax,missions:0};state.credits-=c.cost;state.ships.push(ship);state.selectedShipId=ship.id;addLog(`${ship.name} purchased and moved into dock.`);persist();render();}
+function hireCadet(id){const d=departments.find(x=>x.id===id);if(!d)return;if(state.credits<cadetCost)return addLog("Not enough credits to hire a cadet.");const n=state.nextCrewId++,m={id:`crew-${n}`,name:randName(),rank:"Cadet",rankCode:"CDT",level:0,xp:0,pendingSkillPoints:0,department:d.id,skills:{...d.skills},shipId:null};state.credits-=cadetCost;state.crew.push(m);addLog(`${m.name} joined ${d.name} as a cadet.`);persist();render();}
+function randName(){return `${firstNames[Math.floor(Math.random()*firstNames.length)]} ${lastNames[Math.floor(Math.random()*lastNames.length)]}`;}
+function selectShip(id){if(!state.ships.some(s=>s.id===id))return;state.selectedShipId=id;persist();render();}
+function assignCrew(id){const ship=selectedShip(),m=state.crew.find(x=>x.id===id);if(!ship||!m||m.shipId)return;const c=classFor(ship);if(crewForShip(ship.id).length>=c.crewMax)return addLog(`${ship.name} has no open bunks.`);m.shipId=ship.id;addLog(`${m.name} assigned to ${ship.name}.`);persist();render();}
+function unassignCrew(id){const m=state.crew.find(x=>x.id===id);if(!m)return;m.shipId=null;persist();render();}
+function launchMission(id){const ship=selectedShip(),mission=missions.find(x=>x.id===id);if(!ship||!mission)return;if(ship.hullNow<=0)return addLog(`${ship.name} is destroyed and cannot launch.`);if((ship.energyNow??0)<mission.energyCost)return addLog(`${ship.name} needs ${mission.energyCost} energy to launch "${mission.name}".`);const crew=crewForShip(ship.id);if(crew.length===0)return addLog("A ship cannot launch without crew.");const {chance}=missionChance(mission,ship),roll=Math.floor(Math.random()*100)+1;ship.missions++;ship.energyNow=Math.max(0,(ship.energyNow??classFor(ship).energyMax)-mission.energyCost);if(roll<=chance){const reward=mission.reward+Math.floor(Math.random()*80);state.credits+=reward;crew.forEach(m=>grantXp(m,2));addLog(`${ship.name}: "${mission.name}" succeeded. Gained ${reward} credits.`);}else{const damage=1+Math.floor(Math.random()*3);ship.hullNow=Math.max(0,ship.hullNow-damage);crew.forEach(m=>grantXp(m,1));addLog(ship.hullNow===0?`${ship.name}: "${mission.name}" failed. The ship was destroyed.`:`${ship.name}: "${mission.name}" failed. Hull damaged by ${damage}.`);}persist();render();}
+function repairShip(id){const ship=state.ships.find(s=>s.id===id);if(!ship)return;const c=classFor(ship),miss=c.hull-ship.hullNow;if(miss<=0)return addLog(`${ship.name} is already fully repaired.`);const cost=miss*repairCostPerHull;if(state.credits<cost)return addLog(`Repairing ${ship.name} requires ${cost} credits.`);state.credits-=cost;ship.hullNow=c.hull;addLog(`${ship.name} repaired to full hull for ${cost} credits.`);persist();render();}
+function rechargeShip(id){const ship=state.ships.find(s=>s.id===id);if(!ship)return;const c=classFor(ship),miss=c.energyMax-(ship.energyNow??c.energyMax);if(miss<=0)return addLog(`${ship.name} battery is already full.`);const cost=miss*rechargeCostPerCell;if(state.credits<cost)return addLog(`Recharging ${ship.name} requires ${cost} credits.`);state.credits-=cost;ship.energyNow=c.energyMax;addLog(`${ship.name} battery recharged for ${cost} credits.`);persist();render();}
+function sellShip(id){const ship=state.ships.find(s=>s.id===id);if(!ship)return;const c=classFor(ship),refund=Math.floor(c.cost/2);state.crew.forEach(m=>{if(m.shipId===ship.id)m.shipId=null;});state.ships=state.ships.filter(s=>s.id!==ship.id);state.credits+=refund;state.selectedShipId=state.ships[0]?.id||null;addLog(`${ship.name} sold for ${refund} credits. Assigned crew returned to base.`);persist();render();}
+function grantXp(m,a){if(m.pendingSkillPoints>0){addLog(`${m.name} is waiting for a skill upgrade before gaining more XP.`);return;}const old=m.level;m.xp+=a;syncRank(m);if(m.level>old){m.pendingSkillPoints+=m.level-old;addLog(`${m.name} advanced to ${m.rank} (${m.rankCode}). Choose ${m.pendingSkillPoints} skill upgrade${m.pendingSkillPoints>1?"s":""}.`);}}
+function upgradeCrewSkill(id,skill){const m=state.crew.find(x=>x.id===id);if(!m||m.pendingSkillPoints<=0||!(skill in skillLabels))return;m.skills[skill]+=1;m.pendingSkillPoints-=1;addLog(`${m.name} improved ${skillLabels[skill]} to ${m.skills[skill]}.`);persist();render();}
+function syncRank(m){const r=[...rankLadder].reverse().find(x=>m.xp>=x.xp)||rankLadder[0];m.level=r.level;m.rank=r.rank;m.rankCode=r.code;}function nextRankFor(m){return rankLadder.find(r=>r.level>m.level)||null;}
+function renderBattery(ship){const c=classFor(ship),max=c.energyMax,cur=Math.max(0,Math.min(max,ship.energyNow??max)),ratio=cur/max,tone=ratio<=.25?"low":ratio<=.5?"mid":"high",cells=Array.from({length:max},(_,i)=>`<span class="${i<cur?"filled":""}"></span>`).join("");return `<div class="battery ${tone}" style="--cells: ${max}" aria-label="Energy ${cur} of ${max}"><div class="battery-head"><span>Energy</span><strong>${cur}/${max}</strong></div><div class="battery-cells">${cells}</div></div>`;}
+function render(){const assigned=state.crew.filter(m=>m.shipId).length;resourcesEl.innerHTML=`<div class="resource">Credits<strong>${state.credits}</strong></div><div class="resource">Docks<strong>${state.ships.length}/${state.dockLimit}</strong></div><div class="resource">Crew<strong>${assigned}/${state.crew.length}</strong></div>`;renderLog();renderDocks();renderShipyard();renderHiring();renderCrew();renderMissions();renderViews();}
+function renderViews(){viewButtons.forEach(b=>b.classList.toggle("is-active",b.dataset.view===activeView));baseViewEl.classList.toggle("is-active",activeView==="base");missionsViewEl.classList.toggle("is-active",activeView==="missions");}
+function renderDocks(){const slots=Array.from({length:state.dockLimit},(_,i)=>state.ships[i]||null);docksEl.innerHTML=slots.map((ship,i)=>{if(!ship)return `<article class="dock"><header><h2>Dock ${i+1}</h2><span class="tag warn">empty</span></header><p class="meta">Ready for a new ship from the shipyard.</p></article>`;const c=classFor(ship),crew=crewForShip(ship.id),missingHull=c.hull-ship.hullNow,repairCost=missingHull*repairCostPerHull,missingEnergy=c.energyMax-(ship.energyNow??c.energyMax),rechargeCost=missingEnergy*rechargeCostPerCell,destroyed=ship.hullNow<=0,selected=ship.id===state.selectedShipId?"ok":"";return `<article class="dock"><header><div><h2>${ship.name}</h2><p class="meta">${c.role}</p></div><span class="tag ${destroyed?"danger":selected}">${destroyed?"destroyed":`${crew.length}/${c.crewMax}`}</span></header><div class="stats-grid"><div class="stat">Hull<strong>${ship.hullNow}/${c.hull}</strong></div><div class="stat">Sensors<strong>${c.sensors}</strong></div><div class="stat">Weapons<strong>${c.weapons}</strong></div><div class="stat">Missions<strong>${ship.missions}</strong></div></div>${renderBattery(ship)}<div class="crew-actions"><button type="button" data-select="${ship.id}">Select Ship</button><button type="button" data-repair="${ship.id}" ${missingHull>0&&state.credits>=repairCost?"":"disabled"}>Repair ${repairCost}</button><button type="button" data-recharge="${ship.id}" ${missingEnergy>0&&state.credits>=rechargeCost?"":"disabled"}>Recharge ${rechargeCost}</button><button type="button" data-sell="${ship.id}">Sell ${Math.floor(c.cost/2)}</button></div></article>`;}).join("");}
+function renderShipyard(){shipyardSummaryEl.textContent="Two docks available at Lunar Base 1";shipyardEl.innerHTML=shipClasses.map(s=>`<article class="ship"><header><div><h2>${s.name}</h2><p class="meta">${s.role}</p></div><span class="tag">${s.crewMax} crew</span></header><div class="stats-grid"><div class="stat">Cost<strong>${s.cost}</strong></div><div class="stat">Hull<strong>${s.hull}</strong></div><div class="stat">Energy<strong>${s.energyMax}</strong></div><div class="stat">Weapons<strong>${s.weapons}</strong></div></div><button type="button" data-buy="${s.id}" ${state.credits>=s.cost&&state.ships.length<state.dockLimit?"":"disabled"}>Buy Ship</button></article>`).join("");}
+function renderHiring(){hireSummaryEl.textContent=`${cadetCost} credits per cadet`;hireListEl.innerHTML=departments.map(d=>`<article class="hire-card" style="--dept: ${d.color}"><header><div><h2><span class="department-dot"></span>${d.name}</h2><p class="meta">${d.focus}</p></div><span class="tag">Lvl 0</span></header><div class="stats-grid"><div class="stat">Command<strong>${d.skills.command}</strong></div><div class="stat">Eng<strong>${d.skills.engineering}</strong></div><div class="stat">Science<strong>${d.skills.science}</strong></div><div class="stat">Medical<strong>${d.skills.medical}</strong></div></div><button type="button" data-hire="${d.id}" ${state.credits>=cadetCost?"":"disabled"}>Hire Cadet</button></article>`).join("");}
+function renderCrew(){const ship=selectedShip();crewSummaryEl.textContent=ship?`Selected: ${ship.name}`:"Selected: no ship";if(state.crew.length===0){crewListEl.innerHTML=`<article class="crew empty-state"><h2>No personnel hired</h2><p class="meta">Hire cadets from the Personnel Office, then assign them to a selected ship.</p></article>`;return;}crewListEl.innerHTML=state.crew.map(m=>{const assignedShip=state.ships.find(s=>s.id===m.shipId),isAssigned=!!assignedShip,d=departmentFor(m);syncRank(m);const next=nextRankFor(m),up=m.pendingSkillPoints>0?`<div class="upgrade-actions" aria-label="Skill upgrade options">${Object.entries(skillLabels).map(([skill,label])=>`<button type="button" data-upgrade-crew="${m.id}" data-upgrade-skill="${skill}">+ ${label}</button>`).join("")}</div>`:"";return `<article class="crew ${isAssigned?"assigned":""}" style="--dept: ${d.color}"><header><div><h2><span class="department-dot"></span>${m.name}</h2><p class="meta">${m.rank} (${m.rankCode}) - ${d.name}${assignedShip?` - ${assignedShip.name}`:""}</p></div><span class="tag ${m.pendingSkillPoints>0||isAssigned?"ok":""}">Lvl ${m.level} / XP ${m.xp}</span></header><p class="rank-note">${next?`Next: ${next.rank} (${next.code}) at ${next.xp} XP`:"Top fleet rank reached"}</p><div class="stats-grid stats-grid-six"><div class="stat">Cmd<strong>${skillValue(m,"command")}</strong></div><div class="stat">Eng<strong>${skillValue(m,"engineering")}</strong></div><div class="stat">Sci<strong>${skillValue(m,"science")}</strong></div><div class="stat">Med<strong>${skillValue(m,"medical")}</strong></div><div class="stat">Tac<strong>${skillValue(m,"tactical")}</strong></div><div class="stat">Ops<strong>${skillValue(m,"operations")}</strong></div></div><div class="crew-actions"><button type="button" data-assign="${m.id}" ${!ship||isAssigned?"disabled":""}>Assign</button><button type="button" data-unassign="${m.id}" ${isAssigned?"":"disabled"}>Recall</button></div>${up}</article>`;}).join("");}
+function renderMissions(){const ship=selectedShip();missionSummaryEl.textContent=ship?ship.name:"Buy a ship first";renderMissionShipCard(ship);missionsEl.innerHTML=missions.map(m=>{const d=departmentFor(m.need),crewCount=ship?crewForShip(ship.id).length:0,destroyed=!!(ship&&ship.hullNow<=0),lowEnergy=!!(ship&&(ship.energyNow??classFor(ship).energyMax)<m.energyCost),canLaunch=!!(ship&&crewCount>0&&!destroyed&&!lowEnergy),chance=missionChance(m,ship);return `<article class="mission" style="--dept: ${d.color}"><header><div><h2><span class="department-dot"></span>${m.name}</h2><p class="meta">${m.text}</p></div><span class="tag warn">risk ${m.risk}</span></header><div class="stats-grid"><div class="stat">Reward<strong>${m.reward}</strong></div><div class="stat">Dept<strong>${d.name}</strong></div><div class="stat">Energy<strong>${m.energyCost}</strong></div><div class="stat">Crew<strong>${crewCount}</strong></div></div><div class="chance-box"><div class="chance-head"><span>Success chance</span><strong>${chance.chance}%</strong></div><div class="chance-grid"><span>${d.name}</span><strong>+${chance.departmentPower}</strong><span>Command support</span><strong>+${chance.commandSupport}</strong><span>Ship ${m.ship}</span><strong>+${chance.shipPower}</strong><span>Risk</span><strong>-${m.risk}</strong></div></div><button type="button" data-mission="${m.id}" ${canLaunch?"":"disabled"}>${!ship?"Need Ship":destroyed?"Destroyed":lowEnergy?"Need Energy":crewCount===0?"Need Crew":"Launch"}</button></article>`;}).join("");}
+function renderMissionShipCard(ship){if(!ship){missionShipSummaryEl.textContent="No ship selected";missionShipCardEl.innerHTML=`<article class="dock empty-state"><h2>No ship available</h2><p class="meta">Buy a ship on the Base screen to unlock missions.</p></article>`;return;}const c=classFor(ship),crew=crewForShip(ship.id),missingHull=c.hull-ship.hullNow,repairCost=missingHull*repairCostPerHull,missingEnergy=c.energyMax-(ship.energyNow??c.energyMax),rechargeCost=missingEnergy*rechargeCostPerCell;missionShipSummaryEl.textContent=`${crew.length}/${c.crewMax} crew`;missionShipCardEl.innerHTML=`<article class="dock mission-ship-card"><header><div><h2>${ship.name}</h2><p class="meta">${c.role}</p></div><span class="tag ${ship.hullNow<=0?"danger":"ok"}">${ship.hullNow<=0?"destroyed":`${crew.length}/${c.crewMax}`}</span></header><div class="stats-grid"><div class="stat">Hull<strong>${ship.hullNow}/${c.hull}</strong></div><div class="stat">Sensors<strong>${c.sensors}</strong></div><div class="stat">Weapons<strong>${c.weapons}</strong></div><div class="stat">Range<strong>${c.range}</strong></div></div>${renderBattery(ship)}<div class="crew-actions"><button type="button" data-repair="${ship.id}" ${missingHull>0&&state.credits>=repairCost?"":"disabled"}>Repair ${repairCost}</button><button type="button" data-recharge="${ship.id}" ${missingEnergy>0&&state.credits>=rechargeCost?"":"disabled"}>Recharge ${rechargeCost}</button></div></article>`;}
+function missionChance(m,ship){if(!ship)return{chance:0,departmentPower:0,commandSupport:0,shipPower:0};const c=classFor(ship),crew=crewForShip(ship.id),departmentPower=crew.reduce((s,x)=>s+skillValue(x,m.need),0),commandPower=crew.reduce((s,x)=>s+skillValue(x,"command"),0),commandSupport=Math.floor(commandPower/3),shipPower=c[m.ship]||0,chance=Math.max(18,Math.min(92,40+departmentPower+commandSupport+shipPower-m.risk));return{chance,departmentPower,commandSupport,shipPower};}
+function renderLog(){logEl.innerHTML=state.log.map(e=>`<div class="log-entry">${e}</div>`).join("");}
 render();
