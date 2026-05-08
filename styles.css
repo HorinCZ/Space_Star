@@ -99,6 +99,21 @@ h2 {
   gap: 8px;
 }
 
+.view-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.view-tabs button {
+  min-width: 112px;
+}
+
+.view-tabs button.is-active {
+  border-color: var(--blue);
+  background: rgba(98, 182, 255, 0.2);
+}
+
 .resource {
   min-width: 116px;
   padding: 9px 11px;
@@ -119,6 +134,26 @@ h2 {
   display: grid;
   grid-template-columns: minmax(320px, 1.05fr) minmax(320px, 0.95fr);
   gap: 14px;
+}
+
+.view {
+  display: none;
+}
+
+.mission-view {
+  grid-template-columns: minmax(420px, 1.1fr) minmax(320px, 0.9fr);
+  gap: 14px;
+}
+
+.mission-column {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.layout.view.is-active,
+.mission-view.view.is-active {
+  display: grid;
 }
 
 .base-panel,
@@ -220,6 +255,7 @@ h2 {
 
 .docks,
 .shipyard,
+.hire-list,
 .crew-list,
 .missions,
 .log {
@@ -230,6 +266,7 @@ h2 {
 
 .dock,
 .ship,
+.hire-card,
 .crew,
 .mission,
 .log-entry {
@@ -241,6 +278,7 @@ h2 {
 
 .dock header,
 .ship header,
+.hire-card header,
 .crew header,
 .mission header {
   display: flex;
@@ -251,9 +289,14 @@ h2 {
 }
 
 .meta,
-.small {
+.small,
+.rank-note {
   color: var(--muted);
   font-size: 0.86rem;
+}
+
+.rank-note {
+  margin-bottom: 8px;
 }
 
 .stats-grid {
@@ -263,12 +306,18 @@ h2 {
   margin: 8px 0;
 }
 
+.stats-grid-six {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
 .stat {
+  min-width: 0;
   padding: 7px;
   border-radius: 6px;
   background: rgba(17, 21, 31, 0.55);
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
+  overflow-wrap: anywhere;
 }
 
 .stat strong {
@@ -320,12 +369,45 @@ h2 {
   color: #9ee4ae;
 }
 
+.tag.danger {
+  background: rgba(240, 106, 95, 0.16);
+  color: #ff9c94;
+}
+
+.hire-card,
+.crew,
+.mission {
+  border-color: color-mix(in srgb, var(--dept, var(--line)) 42%, var(--line));
+}
+
+.hire-card h2,
+.crew h2,
+.mission h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.department-dot {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+  border-radius: 999px;
+  background: var(--dept, var(--blue));
+  box-shadow: 0 0 16px color-mix(in srgb, var(--dept, var(--blue)) 72%, transparent);
+}
+
 .crew.assigned {
   border-color: rgba(117, 209, 138, 0.5);
 }
 
-.log-panel {
-  grid-column: 1 / -1;
+.dock:has(.tag.danger) {
+  border-color: rgba(240, 106, 95, 0.64);
+}
+
+.log-panel,
+.mission-panel {
+  min-height: auto;
 }
 
 textarea {
@@ -341,13 +423,131 @@ textarea {
 }
 
 .log {
-  max-height: 180px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  max-height: 190px;
   overflow: auto;
+}
+
+.mission-panel .missions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-height: none;
+  overflow: auto;
+}
+
+#missionShipCard {
+  padding: 12px;
+}
+
+.mission-view .log {
+  grid-template-columns: 1fr;
+  max-height: 640px;
+}
+
+.save-panel {
+  grid-column: 1 / -1;
+  min-height: auto;
+}
+
+.chance-box {
+  margin: 10px 0;
+  padding: 9px;
+  border: 1px solid rgba(154, 168, 189, 0.2);
+  border-radius: 8px;
+  background: rgba(17, 21, 31, 0.42);
+}
+
+.chance-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+  color: var(--muted);
+}
+
+.chance-head strong {
+  color: var(--ink);
+}
+
+.chance-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.chance-grid strong {
+  color: var(--ink);
+}
+
+.battery {
+  margin: 10px 0;
+  padding: 9px;
+  border: 1px solid rgba(154, 168, 189, 0.2);
+  border-radius: 8px;
+  background: rgba(17, 21, 31, 0.42);
+}
+
+.battery-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.battery-head strong {
+  color: var(--ink);
+}
+
+.battery-cells {
+  display: grid;
+  grid-template-columns: repeat(var(--cells, 5), minmax(14px, 1fr));
+  gap: 5px;
+}
+
+.battery-cells span {
+  height: 13px;
+  border: 1px solid rgba(154, 168, 189, 0.28);
+  border-radius: 4px;
+  background: rgba(14, 19, 29, 0.8);
+}
+
+.battery.high .battery-cells span.filled {
+  border-color: rgba(117, 209, 138, 0.55);
+  background: linear-gradient(180deg, #9ef0a8, #4abf64);
+}
+
+.battery.mid .battery-cells span.filled {
+  border-color: rgba(244, 188, 86, 0.58);
+  background: linear-gradient(180deg, #ffd47a, #df8f2f);
+}
+
+.battery.low .battery-cells span.filled {
+  border-color: rgba(240, 106, 95, 0.62);
+  background: linear-gradient(180deg, #ff9c94, #d84a42);
 }
 
 .log-entry {
   padding: 9px 10px;
   color: var(--muted);
+}
+
+.empty-state {
+  min-height: 120px;
+}
+
+.upgrade-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.upgrade-actions button {
+  min-height: 32px;
+  font-size: 0.82rem;
 }
 
 @media (max-width: 980px) {
@@ -361,7 +561,18 @@ textarea {
     margin-top: 12px;
   }
 
-  .layout {
+  .layout,
+  .mission-view {
     grid-template-columns: 1fr;
+  }
+
+  .mission-panel .missions {
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
+
+  .stats-grid,
+  .stats-grid-six {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
