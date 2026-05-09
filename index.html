@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lunar Fleet Command</title>
-    <link rel="stylesheet" href="styles.css?v=20260509-console2" />
+    <link rel="stylesheet" href="styles.css?v=20260509-console3" />
     <link rel="stylesheet" href="sections.css?v=20260509-sections" />
   </head>
   <body>
@@ -50,17 +50,15 @@
 
           <nav class="view-tabs" aria-label="Game views">
             <button class="is-active" type="button" data-view="base">Station Ops</button>
-            <button type="button" data-view="shipyard">Shipyard</button>
-            <button type="button" data-view="personnel">Personnel</button>
             <button type="button" data-view="missions">Missions</button>
           </nav>
 
-          <div class="system-menu" aria-hidden="true">
-            <div>Shipyard</div>
-            <div>Personnel</div>
-            <div>Systems</div>
-            <div>Crew Manifest</div>
-            <div>Galactic Map</div>
+          <div class="system-menu" aria-label="Station departments">
+            <button type="button" data-view="shipyard">Shipyard</button>
+            <button type="button" data-view="personnel">Personnel</button>
+            <button type="button" disabled>Systems</button>
+            <button type="button" data-view="base">Crew Manifest</button>
+            <button type="button" disabled>Galactic Map</button>
           </div>
 
           <section class="location-card">
@@ -169,6 +167,6 @@
     <script src="game.js?v=20260509-sections"></script>
     <script src="feedback.js?v=20260509-sections"></script>
     <script src="console-status.js?v=20260509-sections"></script>
-    <script src="sections.js?v=20260509-sections-fix"></script>
+    <script src="sections.js?v=20260509-system-menu"></script>
   </body>
 </html>
