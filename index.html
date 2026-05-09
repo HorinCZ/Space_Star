@@ -4,107 +4,161 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lunar Fleet Command</title>
-    <link rel="stylesheet" href="styles.css?v=20260509-energy" />
-    <link rel="stylesheet" href="feedback.css?v=20260509-feedback" />
+    <link rel="stylesheet" href="styles.css?v=20260509-console" />
   </head>
   <body>
     <main class="app">
       <header class="topbar">
-        <div>
-          <p class="eyebrow">Lunar Base 1</p>
-          <h1>Lunar Fleet Command</h1>
-        </div>
+        <div class="station-tab">Station</div>
+        <div class="topline"></div>
         <div class="resources" id="resources"></div>
       </header>
 
-      <nav class="view-tabs" aria-label="Game views">
-        <button class="is-active" type="button" data-view="base">Base</button>
-        <button type="button" data-view="missions">Missions</button>
-      </nav>
+      <section class="status-strip" aria-label="Station status">
+        <div class="status-card">
+          <span>Hull</span>
+          <strong id="statusHull">50</strong>
+          <div class="meter red"><span></span></div>
+        </div>
+        <div class="status-card">
+          <span>Shields</span>
+          <strong>50</strong>
+          <div class="meter blue"><span></span></div>
+        </div>
+        <div class="status-card">
+          <span>Energy</span>
+          <strong id="statusEnergy">100</strong>
+          <div class="meter amber"><span></span></div>
+        </div>
+        <div class="status-spacer"></div>
+        <div class="signal-card">15 <span>/</span> 10 <span>/</span> 5</div>
+      </section>
 
       <div class="toast-stack" id="toastStack" aria-live="polite"></div>
 
-      <section class="layout view is-active" id="baseView">
-        <section class="base-panel">
-          <div class="moon-scene" aria-label="Lunar Base 1">
-            <div class="planet"></div>
-            <div class="station">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-            <div class="orbit orbit-a"></div>
-            <div class="orbit orbit-b"></div>
-          </div>
-          <div class="docks" id="docks"></div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-title">
-            <h2>Shipyard</h2>
-            <span id="shipyardSummary"></span>
-          </div>
-          <div class="shipyard" id="shipyard"></div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-title">
-            <h2>Personnel Office</h2>
-            <span id="hireSummary"></span>
-          </div>
-          <div class="hire-list" id="hireList"></div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-title">
-            <h2>Crew Roster</h2>
-            <span id="crewSummary"></span>
-          </div>
-          <div class="crew-list" id="crewList"></div>
-        </section>
-
-        <section class="panel save-panel">
-          <div class="panel-title">
-            <h2>Save Management</h2>
-            <div class="save-actions">
-              <button id="exportBtn" type="button">Export Save</button>
-              <button id="importBtn" type="button">Import Save</button>
-              <button id="resetBtn" type="button">New Save</button>
-            </div>
-          </div>
-          <textarea id="saveBox" spellcheck="false" aria-label="Save data"></textarea>
-        </section>
-      </section>
-
-      <section class="mission-view view" id="missionsView">
-        <section class="mission-column">
-          <section class="panel mission-ship-panel">
-            <div class="panel-title">
-              <h2>Selected Ship</h2>
-              <span id="missionShipSummary"></span>
-            </div>
-            <div id="missionShipCard"></div>
+      <section class="command-shell">
+        <aside class="sidebar" aria-label="Station systems">
+          <section class="side-box">
+            <span>Selected Vessel</span>
+            <strong id="sideSelectedShip">No vessel</strong>
+          </section>
+          <section class="side-box">
+            <span>Current Operations</span>
+            <strong>Lunar Base One</strong>
           </section>
 
-          <section class="panel mission-panel">
-            <div class="panel-title">
-              <h2>Missions</h2>
-              <span id="missionSummary"></span>
-            </div>
-            <div class="missions" id="missions"></div>
+          <nav class="view-tabs" aria-label="Game views">
+            <button class="is-active" type="button" data-view="base">Station Ops</button>
+            <button type="button" data-view="missions">Missions</button>
+          </nav>
+
+          <div class="system-menu" aria-hidden="true">
+            <div>Shipyard</div>
+            <div>Personnel</div>
+            <div>Systems</div>
+            <div>Crew Manifest</div>
+            <div>Galactic Map</div>
+          </div>
+
+          <section class="location-card">
+            <span>Location</span>
+            <strong>Lunar Base One</strong>
+            <small>base class</small>
+          </section>
+        </aside>
+
+        <section class="content-deck">
+          <section class="layout view is-active" id="baseView">
+            <section class="hero-console">
+              <div class="hero-copy">
+                <p class="eyebrow">Standard Orbit</p>
+                <h1>Lunar Base One</h1>
+              </div>
+              <div class="tactical-card">
+                <span>Tactical Readiness</span>
+                <strong>Codex-A1</strong>
+              </div>
+              <div class="moon-scene" aria-label="Lunar Base 1">
+                <div class="planet"></div>
+                <div class="station">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <div class="orbit orbit-a"></div>
+                <div class="orbit orbit-b"></div>
+                <div class="scan-label">Identified: Lunar Base One</div>
+              </div>
+              <div class="docks" id="docks"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-title">
+                <h2>Shipyard</h2>
+                <span id="shipyardSummary"></span>
+              </div>
+              <div class="shipyard" id="shipyard"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-title">
+                <h2>Personnel Office</h2>
+                <span id="hireSummary"></span>
+              </div>
+              <div class="hire-list" id="hireList"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-title">
+                <h2>Crew Roster</h2>
+                <span id="crewSummary"></span>
+              </div>
+              <div class="crew-list" id="crewList"></div>
+            </section>
+
+            <section class="panel save-panel">
+              <div class="panel-title">
+                <h2>Save Management</h2>
+                <div class="save-actions">
+                  <button id="exportBtn" type="button">Export Save</button>
+                  <button id="importBtn" type="button">Import Save</button>
+                  <button id="resetBtn" type="button">New Save</button>
+                </div>
+              </div>
+              <textarea id="saveBox" spellcheck="false" aria-label="Save data"></textarea>
+            </section>
+          </section>
+
+          <section class="mission-view view" id="missionsView">
+            <section class="mission-column">
+              <section class="panel mission-ship-panel">
+                <div class="panel-title">
+                  <h2>Selected Ship</h2>
+                  <span id="missionShipSummary"></span>
+                </div>
+                <div id="missionShipCard"></div>
+              </section>
+
+              <section class="panel mission-panel">
+                <div class="panel-title">
+                  <h2>Missions</h2>
+                  <span id="missionSummary"></span>
+                </div>
+                <div class="missions" id="missions"></div>
+              </section>
+            </section>
           </section>
         </section>
 
-        <section class="panel log-panel">
+        <aside class="panel log-panel">
           <div class="panel-title">
             <h2>Command Log</h2>
           </div>
           <div class="log" id="log"></div>
-        </section>
+        </aside>
       </section>
     </main>
 
-    <script src="game.js?v=20260509-energy"></script>
-    <script src="feedback.js?v=20260509-feedback"></script>
+    <script src="game.js?v=20260509-console"></script>
   </body>
 </html>
