@@ -11,10 +11,20 @@ The player starts at Lunar Base 1 with two empty docks, 1000 credits, and no cre
 - Hireable level 1 cadets with department colors
 - Crew assignment to selected ships
 - Missions with department-based checks
+- Multi-phase missions with scan, approach, encounter, objective, and return phases
+- Crew HP, injuries, rest recovery, mission counters, and Hall of Fame records
+- Per-ship shield values for future combat systems
 - Ship energy batteries with station recharge
 - Ship repair and sale actions
 - Local browser save
 - Save export/import
+
+## Current Structure
+
+- `index.html` contains the game layout.
+- `styles.css` contains all visual styling.
+- `data.js` contains ship, mission, department, rank, and name data.
+- `game.js` contains the save system, actions, mission flow, and rendering.
 
 ## Public Web
 
