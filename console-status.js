@@ -6,7 +6,9 @@
   const resources = document.querySelector("#resources");
 
   function selectedDock() {
-    return docks?.querySelector(".dock:has(.tag.ok)") || docks?.querySelector(".dock");
+    if (!docks) return null;
+    const dockList = Array.from(docks.querySelectorAll(".dock"));
+    return dockList.find((dock) => dock.querySelector(".tag.ok")) || dockList[0] || null;
   }
 
   function statValue(dock, label) {
