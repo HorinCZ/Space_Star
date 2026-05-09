@@ -30,12 +30,16 @@
     log.firstElementChild?.classList.add("latest");
   }
 
-  document.addEventListener("click", (event) => {
-    const button = event.target.closest("button:not(:disabled)");
-    if (button) flashButton(button);
-  }, true);
+  document.addEventListener(
+    "click",
+    (event) => {
+      const button = event.target.closest("button:not(:disabled)");
+      if (button) flashButton(button);
+    },
+    true,
+  );
 
-  if (typeof window.addLog === "function") {
+  if (typeof window.addLog === "function" && typeof window.showToast !== "function") {
     const originalAddLog = window.addLog;
     window.addLog = function patchedAddLog(message) {
       originalAddLog(message);
