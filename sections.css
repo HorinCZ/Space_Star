@@ -4,5 +4,8 @@
 
 .shipyard,
 .hire-list {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
