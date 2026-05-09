@@ -26,6 +26,9 @@
 
   function updateConsoleStatus() {
     const dock = selectedDock();
+    if (resources && !resources.textContent.toLowerCase().includes("stardate")) {
+      resources.insertAdjacentHTML("afterbegin", '<div class="resource">Stardate<strong>58012.4</strong></div>');
+    }
     if (selectedShipLabel) {
       selectedShipLabel.textContent = dock?.querySelector("h2")?.textContent.trim() || "No vessel";
     }
