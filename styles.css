@@ -343,9 +343,10 @@ h2 {
 }
 
 .view-tabs button,
-.system-menu div {
+.system-menu button {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   min-height: 36px;
   padding: 0 12px;
   border-radius: 7px;
@@ -359,7 +360,7 @@ h2 {
   color: #020202;
 }
 
-.system-menu div {
+.system-menu button {
   color: var(--muted);
   font-size: 0.68rem;
   font-weight: 900;
@@ -367,15 +368,22 @@ h2 {
   text-transform: uppercase;
 }
 
-.system-menu div:nth-child(2) {
+.system-menu button:hover:not(:disabled),
+.system-menu button.is-active:not(:disabled) {
+  border-color: var(--orange);
+  background: #1c1304;
+  color: var(--orange);
+}
+
+.system-menu button:nth-child(2) {
   color: var(--violet);
 }
 
-.system-menu div:nth-child(4) {
+.system-menu button:nth-child(4) {
   color: var(--blue);
 }
 
-.system-menu div:nth-child(5) {
+.system-menu button:nth-child(5) {
   color: var(--green);
 }
 
@@ -554,7 +562,7 @@ h2 {
 
 .docks,
 .shipyard,
-.hire-list,
+hire-list,
 .crew-list,
 .missions,
 .log {
