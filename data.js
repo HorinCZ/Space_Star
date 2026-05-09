@@ -1,0 +1,226 @@
+const saveKey = "lunar-fleet-command-save-v2";
+const cadetCost = 100;
+const crewMaxHp = 3;
+const repairCostPerHull = 40;
+const rechargeCostPerCell = 10;
+const calendarStart = { day: 1, month: 5, year: 2326 };
+const skillLabels = {
+  command: "Command",
+  engineering: "Engineering",
+  science: "Science",
+  medical: "Medical",
+  tactical: "Tactical",
+  operations: "Operations",
+};
+
+const rankLadder = [
+  { level: 0, xp: 0, rank: "Cadet", code: "CDT", description: "Academy trainee." },
+  { level: 1, xp: 10, rank: "Crewman", code: "CRW", description: "Basic crew member." },
+  { level: 2, xp: 30, rank: "Specialist", code: "SPC", description: "Technical expert without command authority." },
+  { level: 3, xp: 80, rank: "Ensign", code: "ENS", description: "Junior officer." },
+  { level: 4, xp: 160, rank: "Lieutenant JG", code: "LTJG", description: "Experienced junior officer." },
+  { level: 5, xp: 280, rank: "Lieutenant", code: "LT", description: "Independent officer." },
+  { level: 6, xp: 450, rank: "Commander", code: "CDR", description: "Executive officer." },
+  { level: 7, xp: 700, rank: "Captain", code: "CPT", description: "Ship commander." },
+  { level: 8, xp: 1000, rank: "Commodore", code: "CMD", description: "Base or fleet commander." },
+];
+
+const departments = [
+  {
+    id: "command",
+    name: "Command",
+    color: "#62b6ff",
+    focus: "leadership and mission coordination",
+    skills: { command: 5, engineering: 2, science: 2, medical: 1, tactical: 2, operations: 3 },
+  },
+  {
+    id: "engineering",
+    name: "Engineering",
+    color: "#f4bc56",
+    focus: "repairs, power systems, and ship endurance",
+    skills: { command: 1, engineering: 5, science: 2, medical: 1, tactical: 2, operations: 3 },
+  },
+  {
+    id: "science",
+    name: "Science",
+    color: "#a98bff",
+    focus: "anomalies, scans, and research data",
+    skills: { command: 1, engineering: 2, science: 5, medical: 2, tactical: 1, operations: 3 },
+  },
+  {
+    id: "medical",
+    name: "Medical",
+    color: "#75d18a",
+    focus: "injury control and crew survival",
+    skills: { command: 1, engineering: 2, science: 3, medical: 5, tactical: 1, operations: 2 },
+  },
+  {
+    id: "tactical",
+    name: "Tactical",
+    color: "#f06a5f",
+    focus: "combat, escorts, and threat response",
+    skills: { command: 2, engineering: 2, science: 1, medical: 1, tactical: 5, operations: 3 },
+  },
+  {
+    id: "operations",
+    name: "Operations",
+    color: "#41d6c3",
+    focus: "piloting, logistics, sensors, and away-team support",
+    skills: { command: 2, engineering: 3, science: 2, medical: 1, tactical: 2, operations: 5 },
+  },
+];
+
+const shipClasses = [
+  {
+    id: "aster-5",
+    name: "Aster-5 Scout",
+    role: "small survey craft",
+    crewMax: 5,
+    cost: 500,
+    hull: 12,
+    shields: 7,
+    energyMax: 10,
+    sensors: 8,
+    weapons: 3,
+    range: 5,
+  },
+  {
+    id: "vega-7",
+    name: "Vega-7 Cutter",
+    role: "fast patrol vessel",
+    crewMax: 7,
+    cost: 850,
+    hull: 16,
+    shields: 9,
+    energyMax: 11,
+    sensors: 7,
+    weapons: 6,
+    range: 6,
+  },
+  {
+    id: "orion-9",
+    name: "Orion-9 Surveyor",
+    role: "science expedition ship",
+    crewMax: 9,
+    cost: 1300,
+    hull: 18,
+    shields: 10,
+    energyMax: 12,
+    sensors: 11,
+    weapons: 4,
+    range: 8,
+  },
+  {
+    id: "helios-12",
+    name: "Helios-12 Frigate",
+    role: "heavy escort vessel",
+    crewMax: 12,
+    cost: 2100,
+    hull: 26,
+    shields: 14,
+    energyMax: 13,
+    sensors: 8,
+    weapons: 12,
+    range: 8,
+  },
+  {
+    id: "atlas-16",
+    name: "Atlas-16 Cruiser",
+    role: "long-range command cruiser",
+    crewMax: 16,
+    cost: 3600,
+    hull: 38,
+    shields: 18,
+    energyMax: 15,
+    sensors: 12,
+    weapons: 16,
+    range: 12,
+  },
+];
+
+const missions = [
+  {
+    id: "relay",
+    name: "Repair Relay Station",
+    risk: 18,
+    reward: 190,
+    energyCost: 1,
+    need: "engineering",
+    ship: "hull",
+    text: "A broken comm relay is drifting at the edge of lunar control space.",
+  },
+  {
+    id: "anomaly",
+    name: "Map Spatial Anomaly",
+    risk: 28,
+    reward: 280,
+    energyCost: 2,
+    need: "science",
+    ship: "sensors",
+    text: "An unstable signal promises valuable data and a dangerous field surge.",
+  },
+  {
+    id: "escort",
+    name: "Escort Supply Convoy",
+    risk: 36,
+    reward: 360,
+    energyCost: 2,
+    need: "tactical",
+    ship: "weapons",
+    text: "A civilian hauler reports unknown contacts beyond the Mars corridor.",
+  },
+  {
+    id: "triage",
+    name: "Emergency Triage Run",
+    risk: 24,
+    reward: 250,
+    energyCost: 2,
+    need: "medical",
+    ship: "range",
+    text: "A remote mining dome needs a medical team before its storm shutters fail.",
+  },
+];
+
+const enemyContacts = [
+  { name: "Raider Skiff", hull: 4, damage: 1, reward: 80, difficulty: 18 },
+  { name: "Corsair Cutter", hull: 7, damage: 2, reward: 130, difficulty: 28 },
+  { name: "Automated Drone", hull: 5, damage: 1, reward: 100, difficulty: 24 },
+];
+
+const firstNames = [
+  "Ari",
+  "Mara",
+  "Jonas",
+  "Nika",
+  "Ilya",
+  "Rami",
+  "Elena",
+  "Tomas",
+  "Milo",
+  "Sara",
+  "Kira",
+  "Noah",
+  "Lena",
+  "Darin",
+  "Vera",
+  "Ren",
+];
+
+const lastNames = [
+  "Voss",
+  "Kade",
+  "Ren",
+  "Vale",
+  "Sol",
+  "Chen",
+  "Ko",
+  "Park",
+  "Dax",
+  "Wynn",
+  "Reyes",
+  "Stone",
+  "Novak",
+  "Sato",
+  "Hale",
+  "Cross",
+];
