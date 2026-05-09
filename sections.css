@@ -1,0 +1,8 @@
+.full-panel {
+  grid-column: 1 / -1;
+}
+
+.shipyard,
+.hire-list {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
