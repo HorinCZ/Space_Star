@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lunar Fleet Command</title>
     <link rel="stylesheet" href="styles.css?v=20260509-console2" />
+    <link rel="stylesheet" href="sections.css?v=20260509-sections" />
   </head>
   <body>
     <main class="app">
@@ -49,6 +50,8 @@
 
           <nav class="view-tabs" aria-label="Game views">
             <button class="is-active" type="button" data-view="base">Station Ops</button>
+            <button type="button" data-view="shipyard">Shipyard</button>
+            <button type="button" data-view="personnel">Personnel</button>
             <button type="button" data-view="missions">Missions</button>
           </nav>
 
@@ -94,22 +97,6 @@
 
             <section class="panel">
               <div class="panel-title">
-                <h2>Shipyard</h2>
-                <span id="shipyardSummary"></span>
-              </div>
-              <div class="shipyard" id="shipyard"></div>
-            </section>
-
-            <section class="panel">
-              <div class="panel-title">
-                <h2>Personnel Office</h2>
-                <span id="hireSummary"></span>
-              </div>
-              <div class="hire-list" id="hireList"></div>
-            </section>
-
-            <section class="panel">
-              <div class="panel-title">
                 <h2>Crew Roster</h2>
                 <span id="crewSummary"></span>
               </div>
@@ -126,6 +113,26 @@
                 </div>
               </div>
               <textarea id="saveBox" spellcheck="false" aria-label="Save data"></textarea>
+            </section>
+          </section>
+
+          <section class="layout view" id="shipyardView">
+            <section class="panel full-panel">
+              <div class="panel-title">
+                <h2>Shipyard</h2>
+                <span id="shipyardSummary"></span>
+              </div>
+              <div class="shipyard" id="shipyard"></div>
+            </section>
+          </section>
+
+          <section class="layout view" id="personnelView">
+            <section class="panel full-panel">
+              <div class="panel-title">
+                <h2>Personnel Office</h2>
+                <span id="hireSummary"></span>
+              </div>
+              <div class="hire-list" id="hireList"></div>
             </section>
           </section>
 
@@ -159,8 +166,9 @@
       </section>
     </main>
 
-    <script src="game.js?v=20260509-console2"></script>
-    <script src="feedback.js?v=20260509-console2"></script>
-    <script src="console-status.js?v=20260509-console3"></script>
+    <script src="game.js?v=20260509-sections"></script>
+    <script src="feedback.js?v=20260509-sections"></script>
+    <script src="console-status.js?v=20260509-sections"></script>
+    <script src="sections.js?v=20260509-sections"></script>
   </body>
 </html>
