@@ -4,8 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lunar Fleet Command</title>
-    <link rel="stylesheet" href="styles.css?v=20260509-system-menu" />
-    <link rel="stylesheet" href="sections.css?v=20260509-system-menu" />
+    <link rel="stylesheet" href="styles.css?v=20260509-public-missions" />
   </head>
   <body>
     <main class="app">
@@ -19,20 +18,18 @@
         <div class="status-card">
           <span>Hull</span>
           <strong id="statusHull">50</strong>
-          <div class="meter red"><span></span></div>
+          <div class="meter red" id="statusHullMeter"><span></span></div>
         </div>
         <div class="status-card">
           <span>Shields</span>
-          <strong>50</strong>
-          <div class="meter blue"><span></span></div>
+          <strong id="statusShields">--</strong>
+          <div class="meter blue" id="statusShieldsMeter"><span></span></div>
         </div>
         <div class="status-card">
           <span>Energy</span>
           <strong id="statusEnergy">100</strong>
-          <div class="meter amber"><span></span></div>
+          <div class="meter amber" id="statusEnergyMeter"><span></span></div>
         </div>
-        <div class="status-spacer"></div>
-        <div class="signal-card">15 <span>/</span> 10 <span>/</span> 5</div>
       </section>
 
       <div class="toast-stack" id="toastStack" aria-live="polite"></div>
@@ -164,10 +161,7 @@
       </section>
     </main>
 
-    <script src="game.js?v=20260509-rename-ship"></script>
-    <script src="feedback.js?v=20260509-sections"></script>
-    <script src="console-status.js?v=20260509-sections"></script>
-    <script src="sections.js?v=20260509-system-menu"></script>
-    <script src="rename-ship.js?v=20260509-rename-ship"></script>
+    <script src="data.js?v=20260509-public-missions"></script>
+    <script src="game.js?v=20260509-public-missions"></script>
   </body>
 </html>
