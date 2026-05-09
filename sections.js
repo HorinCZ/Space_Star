@@ -36,6 +36,7 @@
   function updateCalendarHud() {
     const resources = document.querySelector("#resources");
     if (!resources) return;
+    const date = currentDate();
     let stardate = Array.from(resources.querySelectorAll(".resource")).find((item) =>
       item.textContent.toLowerCase().includes("stardate"),
     );
@@ -44,7 +45,7 @@
       stardate = resources.querySelector(".resource");
     }
     const value = stardate.querySelector("strong");
-    if (value) value.textContent = currentDate();
+    if (value && value.textContent !== date) value.textContent = date;
   }
 
   function showView(viewName) {
