@@ -32,7 +32,8 @@ body {
 }
 
 button,
-textarea {
+textarea,
+input {
   font: inherit;
 }
 
@@ -187,14 +188,12 @@ h2 {
 
 .status-strip {
   display: grid;
-  grid-template-columns: 126px 126px 126px 1fr 130px;
+  grid-template-columns: repeat(3, 126px);
   gap: 6px;
   margin: 6px 0 10px;
 }
 
-.status-card,
-.status-spacer,
-.signal-card {
+.status-card {
   min-height: 58px;
   border: 1px solid var(--line);
   border-radius: 7px;
@@ -231,8 +230,9 @@ h2 {
 
 .meter span {
   display: block;
-  width: 70%;
+  width: var(--value, 0%);
   height: 100%;
+  transition: width 180ms ease;
 }
 
 .meter.red span {
@@ -245,18 +245,6 @@ h2 {
 
 .meter.amber span {
   background: var(--amber);
-}
-
-.signal-card {
-  display: grid;
-  place-items: center;
-  color: var(--orange);
-  font-family: Consolas, "Courier New", monospace;
-  font-size: 0.86rem;
-}
-
-.signal-card span {
-  color: var(--muted);
 }
 
 .toast-stack {
@@ -562,7 +550,7 @@ h2 {
 
 .docks,
 .shipyard,
-hire-list,
+.hire-list,
 .crew-list,
 .missions,
 .log {
@@ -574,6 +562,11 @@ hire-list,
 .docks {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   padding: 0;
+}
+
+.shipyard,
+.hire-list {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 .dock,
@@ -631,6 +624,10 @@ hire-list,
   grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
+.shipyard-stats-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .stat {
   min-width: 0;
   padding: 8px;
@@ -654,15 +651,44 @@ hire-list,
 
 .actions,
 .save-actions,
-.crew-actions {
+.crew-actions,
+.mission-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
+.rename-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.rename-row input {
+  min-width: 0;
+  min-height: 36px;
+  border: 1px solid #282828;
+  border-radius: 7px;
+  background: #080808;
+  color: var(--ink);
+  padding: 0 10px;
+  font-size: 0.76rem;
+}
+
+.rename-row input:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(255, 159, 0, 0.12);
+}
+
 .panel {
   min-height: 260px;
   overflow: hidden;
+}
+
+.full-panel {
+  grid-column: 1 / -1;
 }
 
 .panel-title {
@@ -706,6 +732,13 @@ hire-list,
   border-color: rgba(255, 49, 88, 0.42);
   background: rgba(255, 49, 88, 0.1);
   color: var(--red);
+}
+
+.crew-vitals {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
 }
 
 .hire-card,
@@ -841,6 +874,64 @@ textarea {
 
 .chance-grid strong {
   color: var(--ink);
+}
+
+.mission-run {
+  grid-column: 1 / -1;
+}
+
+.mission-actions {
+  margin-top: 10px;
+}
+
+.mission-rulebook {
+  display: grid;
+  flex: 1 1 100%;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.mission-rulebook div {
+  display: grid;
+  gap: 2px;
+  padding: 8px;
+  border: 1px solid #242424;
+  border-radius: 6px;
+  background: #080808;
+}
+
+.mission-rulebook strong {
+  color: var(--orange);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.mission-rulebook span {
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+
+.hall-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.hall-entry {
+  display: grid;
+  gap: 2px;
+  padding: 8px;
+  border-radius: 4px;
+  background: #080808;
+}
+
+.hall-entry strong {
+  color: var(--ink);
+}
+
+.hall-entry span {
+  color: var(--muted);
+  font-size: 0.72rem;
 }
 
 .battery-cells {
