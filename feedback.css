@@ -1,0 +1,78 @@
+button {
+  position: relative;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 90ms ease;
+}
+
+button:active:not(:disabled),
+button.is-confirming:not(:disabled) {
+  transform: translateY(1px);
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(117, 209, 138, 0.16);
+}
+
+.resources.is-updated .resource {
+  animation: resourcePulse 520ms ease;
+}
+
+@keyframes resourcePulse {
+  0% {
+    border-color: var(--green);
+    box-shadow: 0 0 0 0 rgba(117, 209, 138, 0.3);
+  }
+  100% {
+    border-color: var(--line);
+    box-shadow: 0 0 0 10px rgba(117, 209, 138, 0);
+  }
+}
+
+.toast-stack {
+  position: sticky;
+  top: 8px;
+  z-index: 5;
+  display: grid;
+  gap: 8px;
+  min-height: 0;
+  margin-bottom: 14px;
+  pointer-events: none;
+}
+
+.toast {
+  justify-self: start;
+  max-width: min(760px, 100%);
+  padding: 10px 12px;
+  border: 1px solid rgba(117, 209, 138, 0.45);
+  border-radius: 8px;
+  background: rgba(21, 35, 36, 0.96);
+  color: var(--ink);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.26);
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.log-entry.latest {
+  border-color: rgba(117, 209, 138, 0.45);
+  background: rgba(117, 209, 138, 0.08);
+  color: var(--ink);
+  animation: logHighlight 900ms ease;
+}
+
+@keyframes logHighlight {
+  0% {
+    box-shadow: inset 4px 0 0 var(--green);
+  }
+  100% {
+    box-shadow: inset 4px 0 0 transparent;
+  }
+}
