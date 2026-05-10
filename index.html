@@ -4,8 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lunar Fleet Command</title>
-    <link rel="stylesheet" href="styles.css?v=20260510-sort-fix" />
-    <link rel="stylesheet" href="save-load-patch.css?v=20260510-sort-fix" />
+    <link rel="stylesheet" href="styles.css?v=20260511-mission-window" />
+    <link rel="stylesheet" href="save-load-patch.css?v=20260511-mission-window" />
+    <link rel="stylesheet" href="mission-window-patch.css?v=20260511-mission-window" />
   </head>
   <body>
     <main class="app">
@@ -54,6 +55,10 @@
           <div class="system-menu" aria-label="Station departments">
             <button type="button" data-view="shipyard">Shipyard</button>
             <button type="button" data-view="personnel">Personnel</button>
+            <button class="mission-destination-button" type="button" data-view="expedition">
+              <span>Destination</span>
+              <strong id="sideDestination">No destination</strong>
+            </button>
             <button type="button" data-view="save">Save / Load</button>
             <button type="button" disabled>Systems</button>
             <button type="button" data-view="base">Crew Manifest</button>
@@ -130,22 +135,32 @@
           </section>
 
           <section class="mission-view view" id="missionsView">
-            <section class="mission-column">
-              <section class="panel mission-ship-panel">
-                <div class="panel-title">
-                  <h2>Selected Ship</h2>
-                  <span id="missionShipSummary"></span>
-                </div>
-                <div id="missionShipCard"></div>
-              </section>
+            <section class="panel mission-panel">
+              <div class="panel-title">
+                <h2>Missions</h2>
+                <span id="missionSummary"></span>
+              </div>
+              <div class="missions" id="missions"></div>
+            </section>
+          </section>
 
-              <section class="panel mission-panel">
-                <div class="panel-title">
-                  <h2>Missions</h2>
-                  <span id="missionSummary"></span>
-                </div>
-                <div class="missions" id="missions"></div>
-              </section>
+          <section class="layout view" id="expeditionView">
+            <section class="panel full-panel expedition-panel">
+              <div class="panel-title">
+                <h2>Mission Window</h2>
+                <span id="missionShipSummary"></span>
+              </div>
+              <div class="expedition-console">
+                <div id="missionActionDeck"></div>
+                <div id="missionShipCard"></div>
+                <section class="panel mission-crew-panel">
+                  <div class="panel-title">
+                    <h2>Current Crew</h2>
+                    <span id="missionCrewSummary"></span>
+                  </div>
+                  <div class="crew-list" id="missionCrewList"></div>
+                </section>
+              </div>
             </section>
           </section>
 
@@ -188,9 +203,10 @@
       </section>
     </main>
 
-    <script src="data.js?v=20260510-sort-fix"></script>
-    <script src="game.js?v=20260510-sort-fix"></script>
-    <script src="save-load-patch.js?v=20260510-sort-fix"></script>
-    <script src="crew-names-patch.js?v=20260510-sort-fix"></script>
+    <script src="data.js?v=20260511-mission-window"></script>
+    <script src="game.js?v=20260511-mission-window"></script>
+    <script src="save-load-patch.js?v=20260511-mission-window"></script>
+    <script src="crew-names-patch.js?v=20260511-mission-window"></script>
+    <script src="mission-window-patch.js?v=20260511-mission-window"></script>
   </body>
 </html>
