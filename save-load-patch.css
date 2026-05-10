@@ -1,0 +1,142 @@
+.system-menu button:nth-child(3) {
+  color: var(--green);
+}
+
+.system-menu button:nth-child(5) {
+  color: var(--blue);
+}
+
+.system-menu button:nth-child(6) {
+  color: var(--green);
+}
+
+.crew-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.sort-controls {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sort-controls button {
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 5px;
+  font-size: 0.62rem;
+}
+
+.sort-controls button.is-active {
+  border-color: var(--orange);
+  background: var(--orange);
+  color: #050505;
+}
+
+.rank-pill,
+.xp-pill {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  padding: 2px 7px;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  background: #080808;
+  color: #c9c3b9;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.rank-pill {
+  color: var(--ink);
+}
+
+.xp-pill {
+  color: var(--muted);
+}
+
+.save-console {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.manual-slots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.save-card {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.save-card header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.autosave-card {
+  border-color: rgba(0, 208, 98, 0.35);
+  background: linear-gradient(180deg, rgba(0, 208, 98, 0.05), var(--panel) 58%);
+}
+
+.empty-save {
+  border-style: dashed;
+}
+
+.save-details {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.save-detail {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 34px;
+  padding: 8px;
+  border-radius: 6px;
+  background: #080808;
+}
+
+.save-detail span {
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.save-detail strong {
+  min-width: 0;
+  color: var(--ink);
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 860px) {
+  .manual-slots {
+    grid-template-columns: 1fr;
+  }
+
+  .save-detail {
+    grid-template-columns: 1fr;
+  }
+}
