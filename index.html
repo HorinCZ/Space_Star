@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lunar Fleet Command</title>
-    <link rel="stylesheet" href="styles.css?v=20260509-audio-visuals-2" />
+    <link rel="stylesheet" href="styles.css?v=20260510-crew-roster" />
+    <link rel="stylesheet" href="save-load-patch.css?v=20260510-crew-roster" />
   </head>
   <body>
     <main class="app">
@@ -53,6 +54,7 @@
           <div class="system-menu" aria-label="Station departments">
             <button type="button" data-view="shipyard">Shipyard</button>
             <button type="button" data-view="personnel">Personnel</button>
+            <button type="button" data-view="save">Save / Load</button>
             <button type="button" disabled>Systems</button>
             <button type="button" data-view="base">Crew Manifest</button>
             <button type="button" disabled>Galactic Map</button>
@@ -93,22 +95,18 @@
             <section class="panel">
               <div class="panel-title">
                 <h2>Crew Roster</h2>
-                <span id="crewSummary"></span>
+                <div class="crew-toolbar">
+                  <span id="crewSummary"></span>
+                  <div class="sort-controls" aria-label="Crew sorting">
+                    <button class="is-active" type="button" data-crew-sort="department">Division</button>
+                    <button type="button" data-crew-sort="hp">HP</button>
+                    <button type="button" data-crew-sort="xp">XP</button>
+                  </div>
+                </div>
               </div>
               <div class="crew-list" id="crewList"></div>
             </section>
 
-            <section class="panel save-panel">
-              <div class="panel-title">
-                <h2>Save Management</h2>
-                <div class="save-actions">
-                  <button id="exportBtn" type="button">Export Save</button>
-                  <button id="importBtn" type="button">Import Save</button>
-                  <button id="resetBtn" type="button">New Save</button>
-                </div>
-              </div>
-              <textarea id="saveBox" spellcheck="false" aria-label="Save data"></textarea>
-            </section>
           </section>
 
           <section class="layout view" id="shipyardView">
@@ -150,6 +148,35 @@
               </section>
             </section>
           </section>
+
+          <section class="layout view" id="saveView">
+            <section class="panel full-panel save-panel">
+              <div class="panel-title">
+                <h2>Save / Load</h2>
+                <span id="saveSummary"></span>
+              </div>
+              <div class="save-console">
+                <article class="save-card autosave-card">
+                  <header>
+                    <div>
+                      <h2>Autosave</h2>
+                      <p class="meta">The browser keeps this updated after every important action.</p>
+                    </div>
+                    <span class="tag ok">active</span>
+                  </header>
+                  <div class="save-details" id="autosaveDetails"></div>
+                  <div class="save-actions">
+                    <button id="exportBtn" type="button">Export File</button>
+                    <button id="importBtn" type="button">Import File</button>
+                    <button id="resetBtn" type="button">New Save</button>
+                  </div>
+                  <input id="importFile" type="file" accept="application/json,.json,.txt" hidden />
+                </article>
+
+                <section class="manual-slots" id="manualSaveSlots" aria-label="Manual save slots"></section>
+              </div>
+            </section>
+          </section>
         </section>
 
         <aside class="panel log-panel">
@@ -161,7 +188,8 @@
       </section>
     </main>
 
-    <script src="data.js?v=20260509-audio-visuals-2"></script>
-    <script src="game.js?v=20260509-audio-visuals-2"></script>
+    <script src="data.js?v=20260510-crew-roster"></script>
+    <script src="game.js?v=20260510-crew-roster"></script>
+    <script src="save-load-patch.js?v=20260510-crew-roster"></script>
   </body>
 </html>
