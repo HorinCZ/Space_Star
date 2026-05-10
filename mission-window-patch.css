@@ -1,0 +1,126 @@
+.system-menu button:nth-child(3) {
+  color: var(--orange);
+}
+
+.system-menu button:nth-child(4) {
+  color: var(--green);
+}
+
+.system-menu button:nth-child(6) {
+  color: var(--blue);
+}
+
+.system-menu button:nth-child(7) {
+  color: var(--green);
+}
+
+.system-menu .mission-destination-button {
+  display: grid;
+  align-items: center;
+  gap: 2px;
+  min-height: 48px;
+  border-color: rgba(255, 159, 0, 0.38);
+  background: rgba(255, 159, 0, 0.08);
+}
+
+.mission-destination-button span {
+  color: var(--muted);
+  font-size: 0.56rem;
+}
+
+.mission-destination-button strong {
+  min-width: 0;
+  color: var(--orange);
+  font-size: 0.7rem;
+  overflow-wrap: anywhere;
+}
+
+.selected-mission {
+  border-color: rgba(255, 159, 0, 0.68);
+  background: linear-gradient(180deg, rgba(255, 159, 0, 0.08), var(--panel) 64%);
+}
+
+.mission-prep-grid {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.bar-stat {
+  padding: 9px;
+  border: 1px solid #242424;
+  border-radius: 6px;
+  background: #080808;
+}
+
+.bar-stat-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bar-stat-head strong {
+  color: var(--ink);
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.bar-track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #050505;
+}
+
+.bar-track span {
+  display: block;
+  width: var(--value, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--orange);
+}
+
+.bar-stat.red .bar-track span {
+  background: var(--red);
+}
+
+.bar-stat.blue .bar-track span {
+  background: var(--blue);
+}
+
+.bar-stat.amber .bar-track span {
+  background: var(--amber);
+}
+
+.mission-ship-stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.expedition-console {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.expedition-console > #missionActionDeck {
+  order: 0;
+}
+
+.expedition-console > #missionShipCard {
+  order: 1;
+  padding: 0;
+}
+
+.mission-crew-panel {
+  order: 2;
+  min-height: auto;
+}
+
+.mission-actions-primary {
+  align-items: center;
+}
