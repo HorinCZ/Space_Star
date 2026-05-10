@@ -324,6 +324,14 @@
     "click",
     (event) => {
       const target = event.target.closest("button");
+      const viewId = target?.dataset.view;
+      if (viewId === "expedition" || viewId === "missions") {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        activeView = viewId;
+        render();
+        return;
+      }
       if (!target?.dataset.selectMission) return;
       event.preventDefault();
       event.stopImmediatePropagation();
