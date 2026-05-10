@@ -167,8 +167,8 @@
       });
     });
 
-    const sortedCards = cards.sort((leftCard, rightCard) => compareCrewCards(leftCard, rightCard, byName));
     const currentOrder = cards.map((card) => crewNameFromCard(card)).join("|");
+    const sortedCards = [...cards].sort((leftCard, rightCard) => compareCrewCards(leftCard, rightCard, byName));
     const nextOrder = sortedCards.map((card) => crewNameFromCard(card)).join("|");
     if (currentOrder !== nextOrder) {
       sortedCards.forEach((card) => crewList.appendChild(card));
@@ -261,9 +261,8 @@
       }
       if (target.dataset.crewSort) {
         event.preventDefault();
-        event.stopImmediatePropagation();
         crewSortMode = target.dataset.crewSort;
-        applyCrewPresentation();
+        window.setTimeout(applyCrewPresentation, 0);
       }
     },
     true,
