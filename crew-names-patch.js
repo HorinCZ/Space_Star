@@ -1,4 +1,5 @@
 (function () {
+  const saveKey = "lunar-fleet-command-save-v2";
   const origins = [
     {
       first: ["Tavon", "Sarek", "Tolar", "Veyla", "Selin", "T'Len", "Marik", "Sovan", "Neral", "Kirel"],
@@ -28,7 +29,7 @@
 
   function loadSave() {
     try {
-      return JSON.parse(localStorage.getItem("lunarFleetSave") || "null") || {};
+      return JSON.parse(localStorage.getItem(saveKey) || "null") || {};
     } catch (error) {
       return {};
     }
@@ -58,10 +59,16 @@
     return `Federation Cadet ${suffix}`;
   }
 
-  window.generateCrewName = createCrewName;
-  try {
-    generateCrewName = createCrewName;
-  } catch (error) {
+  function installGenerator() {
     window.generateCrewName = createCrewName;
+    try {
+      generateCrewName = createCrewName;
+    } catch (error) {
+      window.generateCrewName = createCrewName;
+    }
   }
+
+  installGenerator();
+  setTimeout(installGenerator, 0);
+  setTimeout(installGenerator, 250);
 })();
