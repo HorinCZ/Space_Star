@@ -167,10 +167,13 @@
       });
     });
 
-    cards
-      .sort((leftCard, rightCard) => compareCrewCards(leftCard, rightCard, byName))
-      .forEach((card) => crewList.appendChild(card));
-    hallCards.forEach((card) => crewList.appendChild(card));
+    const sortedCards = cards.sort((leftCard, rightCard) => compareCrewCards(leftCard, rightCard, byName));
+    const currentOrder = cards.map((card) => crewNameFromCard(card)).join("|");
+    const nextOrder = sortedCards.map((card) => crewNameFromCard(card)).join("|");
+    if (currentOrder !== nextOrder) {
+      sortedCards.forEach((card) => crewList.appendChild(card));
+      hallCards.forEach((card) => crewList.appendChild(card));
+    }
 
     applyingCrewPresentation = false;
   }
