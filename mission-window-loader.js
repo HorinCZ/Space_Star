@@ -38,6 +38,12 @@
     return missionData.find((mission) => mission.id === id) || null;
   }
 
+  function activeMission(state) {
+    const ship = selectedShip(state);
+    const id = ship?.missionRun?.missionId;
+    return missionData.find((mission) => mission.id === id) || null;
+  }
+
   function selectedShip(state) {
     return state.ships?.find((ship) => ship.id === state.selectedShipId) || state.ships?.[0] || null;
   }
@@ -99,7 +105,7 @@
   }
 
   function updateDestinationButton() {
-    const destination = selectedMission();
+    const destination = selectedMission() || activeMission(readState());
     const label = document.querySelector("#sideDestination");
     if (label) label.textContent = destination?.name || "No destination";
   }
@@ -124,7 +130,7 @@
   function renderExpedition() {
     const state = readState();
     const ship = selectedShip(state);
-    const mission = selectedMission();
+    const mission = selectedMission() || activeMission(state);
     const crew = ship ? crewForShip(state, ship.id) : [];
     const actionDeck = document.querySelector("#missionActionDeck");
     const shipCard = document.querySelector("#missionShipCard");
@@ -213,6 +219,7 @@
   function renderRunActions(actionDeck, ship) {
     const run = ship.missionRun;
     const mission = missionData.find((item) => item.id === run.missionId) || selectedMission();
+    const enemy = run.enemy;
     actionDeck.innerHTML = `
       <article class="mission mission-run">
         <header><div><h2>${mission?.name || "Mission in Progress"}</h2><p class="meta">Current phase: ${run.phase}</p></div><span class="tag warn">${run.phase}</span></header>
@@ -223,8 +230,35 @@
           ${run.phase === "objective" ? `<button type="button" data-mission-action="objective" data-objective-mode="careful">Careful Work</button><button type="button" data-mission-action="objective" data-objective-mode="standard">Attempt Objective</button><button type="button" data-mission-action="objective" data-objective-mode="push">Push Hard</button><button type="button" data-mission-action="abort">Abort Mission</button>` : ""}
           ${run.phase === "return" ? `<button type="button" data-mission-action="return">Return to Base</button>` : ""}
         </div>
-        <div class="stats-grid"><div class="stat">Signal<strong>${run.scanProgress || 0}/3</strong></div><div class="stat">Objective<strong>${run.objectiveProgress || 0}/3</strong></div><div class="stat">Banked<strong>${run.rewardBanked || 0}</strong></div><div class="stat">Enemy<strong>${run.enemy?.name || "none"}</strong></div></div>
+        <div class="stats-grid"><div class="stat">Signal<strong>${run.scanProgress || 0}/3</strong></div><div class="stat">Objective<strong>${run.objectiveProgress || 0}/3</strong></div><div class="stat">Banked<strong>${run.rewardBanked || 0}</strong></div><div class="stat">Enemy<strong>${enemy?.name || "none"}</strong></div></div>
+        ${enemy ? renderEnemyStatus(enemy) : ""}
       </article>
+    `;
+  }
+
+  function renderEnemyStatus(enemy) {
+    const hullNow = Math.max(0, enemy.hullNow ?? enemy.hull ?? 0);
+    const hullMax = Math.max(1, enemy.hull ?? hullNow);
+    return `
+      <section class="enemy-status-card" aria-label="Enemy contact">
+        <header>
+          <div class="enemy-silhouette" aria-hidden="true"><span></span><i></i><b></b></div>
+          <div>
+            <h3>${escapeHtml(enemy.name || "Hostile Contact")}</h3>
+            <p class="meta">Hostile contact locked on tactical sensors.</p>
+          </div>
+          <span class="tag danger">hostile</span>
+        </header>
+        <div class="mission-prep-grid">
+          ${statusBar("Enemy Hull", hullNow, hullMax, "red")}
+        </div>
+        <div class="stats-grid mission-ship-stats">
+          <div class="stat">Damage<strong>${enemy.damage ?? 0}</strong></div>
+          <div class="stat">Difficulty<strong>${enemy.difficulty ?? 0}</strong></div>
+          <div class="stat">Salvage<strong>${enemy.reward ?? 0}</strong></div>
+          <div class="stat">Status<strong>${hullNow <= 0 ? "disabled" : "active"}</strong></div>
+        </div>
+      </section>
     `;
   }
 
