@@ -1,6 +1,8 @@
 (function () {
   const saveKey = "lunar-fleet-command-save-v2";
   const destinationKey = "lunar-fleet-command-destination";
+  const crewSortKey = "lunar-fleet-command-mission-crew-sort";
+  let missionCrewSort = localStorage.getItem(crewSortKey) || "department";
   const missionData = [
     { id: "relay", name: "Repair Relay Station", risk: 18, reward: 190, need: "engineering", ship: "hull", text: "A broken comm relay is drifting at the edge of lunar control space." },
     { id: "anomaly", name: "Map Spatial Anomaly", risk: 28, reward: 280, need: "science", ship: "sensors", text: "An unstable signal promises valuable data and a dangerous field surge." },
@@ -42,6 +44,22 @@
 
   function crewForShip(state, shipId) {
     return (state.crew || []).filter((member) => member.shipId === shipId);
+  }
+
+  function sortedCrewForMission(crew) {
+    const departmentOrder = ["command", "engineering", "science", "medical", "tactical", "operations"];
+    return [...crew].sort((left, right) => {
+      if (missionCrewSort === "hp") {
+        return (left.hp || 0) - (right.hp || 0) || String(left.name).localeCompare(String(right.name));
+      }
+      if (missionCrewSort === "xp") {
+        return (right.xp || 0) - (left.xp || 0) || String(left.name).localeCompare(String(right.name));
+      }
+      return (
+        departmentOrder.indexOf(left.department) - departmentOrder.indexOf(right.department) ||
+        String(left.name).localeCompare(String(right.name))
+      );
+    });
   }
 
   function escapeHtml(value) {
@@ -86,6 +104,23 @@
     if (label) label.textContent = destination?.name || "No destination";
   }
 
+  function renderMissionCrewHeader(ship, crew, shipClass) {
+    const title = document.querySelector(".mission-crew-panel .panel-title");
+    if (!title) return;
+    const summary = ship ? `${crew.length}/${shipClass.crewMax} assigned` : "No ship selected";
+    title.innerHTML = `
+      <h2>Current Crew</h2>
+      <div class="crew-toolbar">
+        <span id="missionCrewSummary">${summary}</span>
+        <div class="sort-controls" aria-label="Mission crew sorting">
+          <button class="${missionCrewSort === "department" ? "is-active" : ""}" type="button" data-mission-crew-sort="department">Division</button>
+          <button class="${missionCrewSort === "hp" ? "is-active" : ""}" type="button" data-mission-crew-sort="hp">HP</button>
+          <button class="${missionCrewSort === "xp" ? "is-active" : ""}" type="button" data-mission-crew-sort="xp">XP</button>
+        </div>
+      </div>
+    `;
+  }
+
   function renderExpedition() {
     const state = readState();
     const ship = selectedShip(state);
@@ -94,12 +129,12 @@
     const actionDeck = document.querySelector("#missionActionDeck");
     const shipCard = document.querySelector("#missionShipCard");
     const shipSummary = document.querySelector("#missionShipSummary");
-    const crewSummary = document.querySelector("#missionCrewSummary");
     const crewList = document.querySelector("#missionCrewList");
     updateDestinationButton();
     if (!actionDeck || !shipCard) return;
 
     if (!ship) {
+      renderMissionCrewHeader(null, [], { crewMax: 0 });
       if (shipSummary) shipSummary.textContent = "No ship selected";
       actionDeck.innerHTML = `<article class="mission mission-run"><header><div><h2>No ship</h2><p class="meta">Buy and select a ship before launching.</p></div><span class="tag warn">standby</span></header></article>`;
       shipCard.innerHTML = "";
@@ -109,8 +144,9 @@
 
     const shipClass = shipClassData[ship.classId] || shipClassData["aster-5"];
     const destinationText = mission ? `Ready for ${mission.name}` : "No destination selected";
+    const sortedCrew = sortedCrewForMission(crew);
+    renderMissionCrewHeader(ship, crew, shipClass);
     if (shipSummary) shipSummary.textContent = destinationText;
-    if (crewSummary) crewSummary.textContent = `${crew.length}/${shipClass.crewMax} assigned`;
     shipCard.innerHTML = `
       <article class="dock mission-ship-card">
         <header>
@@ -132,7 +168,7 @@
     `;
     if (crewList) {
       crewList.innerHTML = crew.length
-        ? crew.map(renderCrewCard).join("")
+        ? sortedCrew.map(renderCrewCard).join("")
         : `<article class="crew empty-state"><h2>No crew assigned</h2><p class="meta">Assign personnel in Station Ops before launch.</p></article>`;
     }
 
@@ -210,8 +246,17 @@
       decorateMissionList();
       return;
     }
+    if (button.dataset.missionCrewSort) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      missionCrewSort = button.dataset.missionCrewSort;
+      localStorage.setItem(crewSortKey, missionCrewSort);
+      renderExpedition();
+      return;
+    }
     if (button.dataset.expeditionLaunch || button.dataset.missionAction) {
-      window.setTimeout(renderExpedition, 180);
+      window.setTimeout(() => setView("expedition"), 180);
+      window.setTimeout(() => setView("expedition"), 650);
     }
   }, true);
 
