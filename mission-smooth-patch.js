@@ -1,5 +1,14 @@
 (function () {
   let missionScrollY = 0;
+  let quietTimer = 0;
+
+  function startQuietMissionRefresh() {
+    document.body.classList.add("is-mission-step-refresh");
+    window.clearTimeout(quietTimer);
+    quietTimer = window.setTimeout(() => {
+      document.body.classList.remove("is-mission-step-refresh");
+    }, 900);
+  }
 
   function restoreMissionScroll() {
     if (!document.querySelector("#expeditionView.is-active")) return;
@@ -19,6 +28,7 @@
     const button = event.target.closest("button");
     if (!button?.dataset.expeditionLaunch && !button?.dataset.missionAction) return;
     missionScrollY = window.scrollY;
+    startQuietMissionRefresh();
     requestAnimationFrame(keepExpeditionView);
     window.setTimeout(keepExpeditionView, 40);
     window.setTimeout(keepExpeditionView, 220);
