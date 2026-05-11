@@ -289,6 +289,18 @@
   will-change: opacity, transform;
 }
 
+body.is-mission-step-refresh .expedition-panel,
+body.is-mission-step-refresh .expedition-console,
+body.is-mission-step-refresh .mission-run,
+body.is-mission-step-refresh .mission-scene-art,
+body.is-mission-step-refresh .mission-ship-card,
+body.is-mission-step-refresh .mission-crew-panel,
+body.is-mission-step-refresh #missionCrewList .crew {
+  animation: none !important;
+  transition-duration: 0.001ms !important;
+  transform: none !important;
+}
+
 @keyframes missionPanelIn {
   from {
     opacity: 0.96;
