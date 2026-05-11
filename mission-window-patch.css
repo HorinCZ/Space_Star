@@ -99,17 +99,22 @@
 
 .mission-scene-art {
   position: relative;
+  height: clamp(190px, 18vw, 260px);
   min-height: 190px;
   margin: 0 0 12px;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--dept, var(--orange)) 46%, #242424);
   border-radius: 8px;
   background: #03050a;
+  contain: layout paint;
+  transform-origin: center;
+  animation: missionSceneIn 240ms ease-out both;
 }
 
 .mission-scene-art svg {
   display: block;
   width: 100%;
+  height: 100%;
   min-height: 190px;
 }
 
@@ -232,10 +237,16 @@
   display: grid;
   gap: 12px;
   padding: 12px;
+  grid-template-rows: auto auto auto;
+}
+
+.expedition-panel {
+  min-height: 720px;
 }
 
 .expedition-console > #missionActionDeck {
   order: 0;
+  min-height: 360px;
 }
 
 .expedition-console > #missionShipCard {
@@ -250,4 +261,45 @@
 
 .mission-actions-primary {
   align-items: center;
+}
+
+.mission-run {
+  animation: missionPanelIn 180ms ease-out both;
+  will-change: opacity, transform;
+}
+
+@keyframes missionPanelIn {
+  from {
+    opacity: 0.96;
+    transform: translateY(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes missionSceneIn {
+  from {
+    opacity: 0.88;
+    transform: scale(0.998);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mission-run,
+  .mission-scene-art,
+  .expedition-panel,
+  .expedition-console,
+  .expedition-console button {
+    animation: none !important;
+    transition-duration: 0.001ms !important;
+    transform: none !important;
+  }
 }
