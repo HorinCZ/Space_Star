@@ -7,10 +7,6 @@
 }
 
 .system-menu button:nth-child(6) {
-  color: var(--blue);
-}
-
-.system-menu button:nth-child(7) {
   color: var(--green);
 }
 
@@ -99,6 +95,79 @@
 
 .mission-ship-stats {
   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.enemy-status-card {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid rgba(240, 106, 95, 0.42);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(240, 106, 95, 0.08), rgba(8, 8, 8, 0.94)),
+    #080808;
+}
+
+.enemy-status-card header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.enemy-status-card h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.tag.danger {
+  border-color: rgba(240, 106, 95, 0.52);
+  color: var(--red);
+  background: rgba(240, 106, 95, 0.12);
+}
+
+.enemy-silhouette {
+  position: relative;
+  width: 58px;
+  height: 38px;
+  border: 1px solid rgba(240, 106, 95, 0.45);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(240, 106, 95, 0.24), transparent 58%),
+    #050505;
+  box-shadow: inset 0 0 18px rgba(240, 106, 95, 0.18), 0 0 14px rgba(240, 106, 95, 0.1);
+}
+
+.enemy-silhouette span,
+.enemy-silhouette i,
+.enemy-silhouette b {
+  position: absolute;
+  display: block;
+  background: var(--red);
+}
+
+.enemy-silhouette span {
+  inset: 17px 12px auto;
+  height: 4px;
+  border-radius: 999px;
+}
+
+.enemy-silhouette i {
+  left: 27px;
+  top: 8px;
+  width: 4px;
+  height: 22px;
+  border-radius: 999px;
+}
+
+.enemy-silhouette b {
+  left: 21px;
+  top: 14px;
+  width: 16px;
+  height: 10px;
+  border-radius: 3px;
 }
 
 .expedition-console {
