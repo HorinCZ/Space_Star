@@ -171,6 +171,7 @@
     shipCard.innerHTML = `
       <article class="dock mission-ship-card">
         <header>
+          ${renderShipVisual(ship, shipClass)}
           <div><h2>${escapeHtml(ship.name)}</h2><p class="meta">${shipClass.role}</p></div>
           <span class="tag ${ship.missionRun ? "warn" : "ok"}">${ship.missionRun ? "away" : `${crew.length}/${shipClass.crewMax}`}</span>
         </header>
@@ -230,6 +231,22 @@
         <p class="rank-note">Missions ${member.missions || 0}</p>
         <div class="stats-grid stats-grid-six"><div class="stat">Cmd<strong>${skillValue(member, "command")}</strong></div><div class="stat">Eng<strong>${skillValue(member, "engineering")}</strong></div><div class="stat">Sci<strong>${skillValue(member, "science")}</strong></div><div class="stat">Med<strong>${skillValue(member, "medical")}</strong></div><div class="stat">Tac<strong>${skillValue(member, "tactical")}</strong></div><div class="stat">Ops<strong>${skillValue(member, "operations")}</strong></div></div>
       </article>
+    `;
+  }
+
+  function renderShipVisual(ship, shipClass) {
+    const seed = ship?.classId || shipClass.name;
+    const accent = pickSeed(seed, ["#2f8cff", "#00d062", "#ff9f00", "#b565ff"], 1);
+    const wing = 16 + (Math.abs(hashString(seed)) % 10);
+    const nose = 14 + (Math.abs(hashString(`${seed}:nose`)) % 14);
+    return `
+      <svg class="ship-visual" viewBox="0 0 180 90" role="img" aria-label="${escapeHtml(shipClass.name)}">
+        <rect x="8" y="10" width="164" height="70" rx="8" fill="#040609" stroke="#25282e" />
+        <path d="M90 ${12 + nose} L${148 - wing} 70 L90 58 L${32 + wing} 70Z" fill="#1c252e" stroke="${accent}" stroke-width="3" />
+        <path d="M90 ${18 + nose} L110 58 L90 66 L70 58Z" fill="#0a0f15" stroke="#8a857d" />
+        <circle cx="90" cy="48" r="8" fill="${accent}" opacity="0.75" />
+        <path d="M42 72 L24 78 M138 72 L156 78" stroke="${accent}" stroke-width="4" stroke-linecap="round" />
+      </svg>
     `;
   }
 
@@ -389,8 +406,9 @@
       return;
     }
     if (button.dataset.expeditionLaunch || button.dataset.missionAction) {
-      window.setTimeout(() => setView("expedition"), 180);
-      window.setTimeout(() => setView("expedition"), 650);
+      window.setTimeout(() => setView("expedition"), 0);
+      window.setTimeout(() => setView("expedition"), 80);
+      window.setTimeout(() => setView("expedition"), 360);
     }
   }, true);
 
