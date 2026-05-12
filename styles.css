@@ -1490,6 +1490,35 @@ body.is-mission-step-refresh #missionCrewList .crew {
   min-height: auto;
 }
 
+#missionCrewList .crew-portrait,
+#missionCrewList .crew-portrait.ai-asset-frame {
+  flex: 0 0 76px;
+  inline-size: 76px;
+  min-inline-size: 76px;
+  max-inline-size: 76px;
+  block-size: 86px;
+  min-block-size: 86px;
+  max-block-size: 86px;
+  width: 76px;
+  min-width: 76px;
+  max-width: 76px;
+  height: 86px;
+  min-height: 86px;
+  max-height: 86px;
+  aspect-ratio: 76 / 86;
+  align-self: flex-start;
+}
+
+#missionCrewList .crew-portrait.ai-asset-frame img {
+  width: 76px;
+  height: 86px;
+  min-width: 76px;
+  min-height: 86px;
+  max-width: 76px;
+  max-height: 86px;
+  object-fit: cover;
+}
+
 .mission-actions-primary {
   align-items: center;
 }
