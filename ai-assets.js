@@ -53,7 +53,7 @@
     const seed = String(member?.id || member?.name || "crew");
     let hash = 0;
     for (let i = 0; i < seed.length; i += 1) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
-    return String(hash % 16).padStart(2, "0");
+    return `portrait-${String(hash % 16).padStart(2, "0")}`;
   }
 
   function rankMarkup(member, department) {
