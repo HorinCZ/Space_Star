@@ -33,8 +33,8 @@
     }
   }
 
-  function selectedMission() {
-    const id = localStorage.getItem(destinationKey);
+  function selectedMission(state = readState()) {
+    const id = state?.selectedMissionId || localStorage.getItem(destinationKey);
     return missionData.find((mission) => mission.id === id) || null;
   }
 
@@ -120,7 +120,8 @@
   }
 
   function updateDestinationButton() {
-    const destination = selectedMission() || activeMission(readState());
+    const state = readState();
+    const destination = selectedMission(state) || activeMission(state);
     const label = document.querySelector("#sideDestination");
     if (label) label.textContent = destination?.name || "No destination";
   }
@@ -145,7 +146,7 @@
   function renderExpedition() {
     const state = readState();
     const ship = selectedShip(state);
-    const mission = selectedMission() || activeMission(state);
+    const mission = selectedMission(state) || activeMission(state);
     const crew = ship ? crewForShip(state, ship.id) : [];
     const actionDeck = document.querySelector("#missionActionDeck");
     const shipCard = document.querySelector("#missionShipCard");
@@ -239,7 +240,7 @@
     const accent = pickSeed(seed, ["#2f8cff", "#00d062", "#ff9f00", "#b565ff"], 1);
     const wing = 16 + (Math.abs(hashString(seed)) % 10);
     const nose = 14 + (Math.abs(hashString(`${seed}:nose`)) % 14);
-    return `
+    const fallback = `
       <svg class="ship-visual" viewBox="0 0 180 90" role="img" aria-label="${escapeHtml(shipClass.name)}">
         <rect x="8" y="10" width="164" height="70" rx="8" fill="#040609" stroke="#25282e" />
         <path d="M90 ${12 + nose} L${148 - wing} 70 L90 58 L${32 + wing} 70Z" fill="#1c252e" stroke="${accent}" stroke-width="3" />
@@ -248,6 +249,7 @@
         <path d="M42 72 L24 78 M138 72 L156 78" stroke="${accent}" stroke-width="4" stroke-linecap="round" />
       </svg>
     `;
+    return window.LunarAssets?.shipVisual(ship, { id: ship?.classId, ...shipClass }, fallback) || fallback;
   }
 
   function renderCrewPortrait(member, dept) {
@@ -262,7 +264,7 @@
         : hairStyle === 1
           ? `<path d="M29 40 Q35 14 60 20 Q72 26 72 44 Q56 31 44 33 Q34 35 29 40Z" fill="${hair}" />`
           : `<path d="M29 39 Q38 20 54 18 Q68 20 74 38 L72 46 Q56 30 42 34 Q34 36 29 39Z" fill="${hair}" />`;
-    return `
+    const fallback = `
       <svg class="crew-portrait" viewBox="0 0 100 112" role="img" aria-label="${escapeHtml(member.name)} portrait">
         <rect x="7" y="7" width="86" height="98" rx="10" fill="#080808" stroke="${dept.color}" />
         <circle cx="50" cy="43" r="26" fill="${skin}" />
@@ -276,6 +278,7 @@
         <text x="50" y="96" text-anchor="middle" font-size="7" font-family="Consolas, monospace" fill="#f3f0e9">${member.rankCode || "CDT"}</text>
       </svg>
     `;
+    return window.LunarAssets?.crewPortrait(member, dept, fallback) || fallback;
   }
 
   function renderRunActions(actionDeck, ship) {
@@ -305,7 +308,7 @@
     return `
       <section class="enemy-status-card" aria-label="Enemy contact">
         <header>
-          <div class="enemy-silhouette" aria-hidden="true"><span></span><i></i><b></b></div>
+          ${window.LunarAssets?.enemyVisual(enemy, `<div class="enemy-silhouette" aria-hidden="true"><span></span><i></i><b></b></div>`) || `<div class="enemy-silhouette" aria-hidden="true"><span></span><i></i><b></b></div>`}
           <div>
             <h3>${escapeHtml(enemy.name || "Hostile Contact")}</h3>
             <p class="meta">Hostile contact locked on tactical sensors.</p>
@@ -346,7 +349,7 @@
     }[phase] || "Mission feed";
     return `
       <figure class="mission-scene-art phase-${phase}" style="--dept: ${dept.color}" aria-label="${escapeHtml(title)}">
-        ${renderSceneSvg(phase, dept.color)}
+        ${window.LunarAssets?.sceneArt(phase, renderSceneSvg(phase, dept.color)) || renderSceneSvg(phase, dept.color)}
         <figcaption><strong>${escapeHtml(title)}</strong><span>${escapeHtml(subtitle)}</span></figcaption>
       </figure>
     `;
