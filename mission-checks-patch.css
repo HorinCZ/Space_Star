@@ -1,0 +1,65 @@
+.scan-challenge {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--dept) 34%, #222);
+  border-radius: 6px;
+  background:
+    linear-gradient(120deg, color-mix(in srgb, var(--dept) 13%, transparent), transparent 52%),
+    #090909;
+}
+
+.scan-challenge-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.scan-challenge-head span:not(.tag) {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.scan-challenge-head strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--ink);
+  font-size: 0.98rem;
+  text-transform: uppercase;
+}
+
+.scan-crew-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.scan-crew-grid button {
+  display: grid;
+  min-height: 48px;
+  justify-items: start;
+  gap: 3px;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.scan-crew-grid button span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-size: 0.74rem;
+}
+
+.scan-crew-grid button strong {
+  color: var(--orange);
+  font-size: 0.68rem;
+}
+
+.objective-challenge {
+  border-color: color-mix(in srgb, var(--dept) 46%, var(--orange));
+}
