@@ -1,0 +1,84 @@
+.mission-freeze-overlay {
+  transition: opacity 340ms ease !important;
+}
+
+.mission-click-stabilizer-overlay {
+  opacity: 1;
+  transition: opacity 420ms ease !important;
+}
+
+.mission-scene-art {
+  height: clamp(210px, 20vw, 300px);
+  min-height: 210px;
+  background: #03050a;
+  isolation: isolate;
+}
+
+.mission-scene-art svg {
+  min-height: 210px;
+}
+
+.mission-scene-image-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #03050a;
+}
+
+.mission-scene-image-wrap > svg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.mission-scene-image {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+}
+
+.mission-scene-art figcaption {
+  z-index: 3;
+}
+
+.mission-ship-card .ship-visual.ai-asset-frame,
+.enemy-status-card .enemy-visual.ai-asset-frame,
+#missionActionDeck .enemy-visual.ai-asset-frame,
+#missionActionDeck .ship-visual.ai-asset-frame {
+  overflow: hidden;
+  background: #050505;
+}
+
+.mission-ship-card .ship-visual.ai-asset-frame img,
+.enemy-status-card .enemy-visual.ai-asset-frame img,
+#missionActionDeck .enemy-visual.ai-asset-frame img,
+#missionActionDeck .ship-visual.ai-asset-frame img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+}
+
+.enemy-status-card .enemy-visual.ai-asset-frame,
+#missionActionDeck .enemy-visual.ai-asset-frame {
+  flex: 0 0 90px;
+  width: 90px;
+  min-width: 90px;
+  max-width: 90px;
+  height: 54px;
+  min-height: 54px;
+  max-height: 54px;
+  aspect-ratio: 5 / 3;
+}
