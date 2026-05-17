@@ -25,7 +25,7 @@
         pointer-events: none;
         background: var(--panel);
         opacity: 1;
-        transition: opacity 160ms ease;
+        transition: opacity 340ms ease;
       }
 
       .mission-freeze-overlay.is-releasing {
@@ -64,7 +64,7 @@
     const overlay = freezeOverlay;
     freezeOverlay = null;
     overlay.classList.add("is-releasing");
-    window.setTimeout(() => overlay.remove(), 180);
+    window.setTimeout(() => overlay.remove(), 360);
   }
 
   function freezeMissionWindow() {
@@ -79,7 +79,7 @@
     consoleEl.append(freezeOverlay);
 
     window.clearTimeout(freezeTimer);
-    freezeTimer = window.setTimeout(releaseMissionFreeze, 560);
+    freezeTimer = window.setTimeout(releaseMissionFreeze, 1040);
   }
 
   function startQuietMissionRefresh() {
@@ -87,7 +87,7 @@
     window.clearTimeout(quietTimer);
     quietTimer = window.setTimeout(() => {
       document.body.classList.remove("is-mission-step-refresh");
-    }, 900);
+    }, 1400);
   }
 
   function restoreMissionScroll() {
@@ -120,6 +120,7 @@
     window.setTimeout(keepExpeditionView, 40);
     window.setTimeout(keepExpeditionView, 220);
     window.setTimeout(keepExpeditionView, 720);
+    window.setTimeout(keepExpeditionView, 1080);
   }, true);
 
   installMissionFreezeStyles();
